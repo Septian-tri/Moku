@@ -180,18 +180,21 @@ class SingleMovieDetailActivity : AppCompatActivity() {
 
             if(siteSourceTrailer.equals("YouTube")) {
                 this@SingleMovieDetailActivity.runOnUiThread(object : Runnable {
-
                     override fun run() {
 
-                        webViewTrailer = findViewById(R.id.movieTrailer)
                         val trailerUri = String.format(ApiUrl.YOUTUBE_MOVIE_TRAILER_URI, trailerKeyId)
+                        var hardwareAccelerateFlag = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+
+                        window.setFlags(hardwareAccelerateFlag, hardwareAccelerateFlag)
 
                         //activated the web view for watching the movie trailer
+                        webViewTrailer = findViewById(R.id.movieTrailer)
                         webViewTrailer.settings.javaScriptEnabled = true
-                        webViewTrailer.webChromeClient = WebChromeClient()
-                        webViewTrailer.webChromeClient = WebChromeClient()
+                        webViewTrailer.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
                         webViewTrailer.settings.userAgentString = NetworkService().userAgent
-                        webViewTrailer.settings.cacheMode = WebSettings.LOAD_NO_CACHE
+                        webViewTrailer.settings.useWideViewPort = true
+                        webViewTrailer.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                        webViewTrailer.webChromeClient = WebChromeClient()
                         webViewTrailer.webViewClient = object : WebViewClient(){
 
                             override fun onPageFinished(view: WebView?, url: String?) {
@@ -207,11 +210,8 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                             }
 
                         }
-
                         webViewTrailer.loadUrl(trailerUri)
-
                     }
-
                 })
             }
 

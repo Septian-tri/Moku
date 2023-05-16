@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.septiantriwidian.moku'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.septiantriwidian.moku"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -23,7 +23,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -43,18 +42,16 @@ dependencies {
 
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.12.12'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'io.mockk:mockk:1.9.3'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'org.mockito.kotlin:mockito-kotlin:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
 
     //network lib
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.12'
     implementation 'com.squareup.okhttp3:okhttp:3.12.12'
     implementation 'com.google.code.gson:gson:2.8.6'
-    
+
     //image slider lib
     implementation 'com.github.smarteist:autoimageslider:1.4.0'
-
 }

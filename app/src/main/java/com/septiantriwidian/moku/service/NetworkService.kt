@@ -49,7 +49,7 @@ class NetworkService {
             .build()
 
         val call = okHttpClient.newCall(request)
-            call.enqueue(callback)
+        call.enqueue(callback)
 
         return call
     }

@@ -137,7 +137,6 @@ class ApiService constructor(private val context : Context, language : String){
     fun fetchImage(posterPath: String,  resultImageCallback : (image : Bitmap) -> Unit){
 
         val uri = baseUri?:(ApiUrl.IMAGE_COVER_ENP + posterPath)
-
         networkService.headerHost = ApiUrl.IMAGE_HOST
         networkService.GET(uri.toString(), object : Callback {
 
