@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var genresListButtonContainer : LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_main)
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         val fullScreenFlag = LayoutParams.FLAG_FULLSCREEN
         val threadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()

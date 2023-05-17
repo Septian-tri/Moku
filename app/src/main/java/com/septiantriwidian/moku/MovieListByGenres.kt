@@ -53,6 +53,7 @@ class MovieListByGenres : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_movie_list_by_genre)
 
         val threadPolicy   = StrictMode.ThreadPolicy.Builder().permitAll().build()
         val fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -68,7 +69,6 @@ class MovieListByGenres : AppCompatActivity() {
 
             super.setTitle(genreName!!.uppercase())
             window.setFlags(fullScreenFlag, fullScreenFlag)
-            setContentView(R.layout.activity_movie_list_by_genre)
             StrictMode.setThreadPolicy(threadPolicy)
 
             //setup the grid view card for list movies

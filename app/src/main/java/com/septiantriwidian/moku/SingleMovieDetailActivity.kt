@@ -54,6 +54,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_single_movie_detail)
 
         val singleMovie = intent.extras!!.getSerializable("singleMovie") as SingleMovieResponseDTO
         val threadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()
@@ -68,7 +69,6 @@ class SingleMovieDetailActivity : AppCompatActivity() {
 
         apiService = ApiService(applicationContext, "id")
         window.setFlags(fullScreenFlag, fullScreenFlag)
-        setContentView(R.layout.activity_single_movie_detail)
         StrictMode.setThreadPolicy(threadPolicy)
         super.setTitle(movieTitle)
 
