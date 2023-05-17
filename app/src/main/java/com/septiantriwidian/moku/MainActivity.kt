@@ -34,22 +34,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         super.onCreate(savedInstanceState)
 
-        apiService = ApiService(applicationContext, "id")
-
         val fullScreenFlag = LayoutParams.FLAG_FULLSCREEN
-
-        window.setFlags(fullScreenFlag, fullScreenFlag)
-
         val threadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         val singleMovieCardParams = FrameLayout.LayoutParams(ViewCardMoviesSetting.MOVIE_CARDVIEW_WIDTH, ViewCardMoviesSetting.MOVIE_CARDVIEW_HEIGHT)
-
         val handler = Handler(Looper.getMainLooper())
 
+        apiService = ApiService(applicationContext, "id")
+        window.setFlags(fullScreenFlag, fullScreenFlag)
         StrictMode.setThreadPolicy(threadPolicy)
         singleMovieCardParams.bottomMargin = ViewCardMoviesSetting.MOVIE_CARDVIEW_MARGIN
 
         sliderView = findViewById(R.id.moviesSliderCover)
-
         apiService.fetchTrendingMovies{result ->
             handler.post(object : Runnable{
                 override fun run(){

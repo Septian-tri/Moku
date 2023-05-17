@@ -54,24 +54,22 @@ class MovieListByGenres : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-            apiService = ApiService(applicationContext, "id")
-
         val threadPolicy   = StrictMode.ThreadPolicy.Builder().permitAll().build()
         val fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN
         val intent         = intent.extras
         val genreId        = intent!!.getLong("genreId")
         val genreName      = intent.getString("genreName")
-
-        super.setTitle(genreName!!.uppercase())
-        window.setFlags(fullScreenFlag, fullScreenFlag)
-        setContentView(R.layout.activity_movie_list_by_genre)
-        StrictMode.setThreadPolicy(threadPolicy)
-
         val parentScroll : ScrollView = findViewById(R.id.parentScrollView)
         val getDisplayResolution = windowManager.defaultDisplay
         val displayResolutionPoint = Point()
             getDisplayResolution.getSize(displayResolutionPoint)
         val screenWidth = displayResolutionPoint.x
+            apiService = ApiService(applicationContext, "id")
+
+            super.setTitle(genreName!!.uppercase())
+            window.setFlags(fullScreenFlag, fullScreenFlag)
+            setContentView(R.layout.activity_movie_list_by_genre)
+            StrictMode.setThreadPolicy(threadPolicy)
 
             //setup the grid view card for list movies
             scrollLayoutParent   = findViewById(R.id.parentLayoutMovieListByGenre)

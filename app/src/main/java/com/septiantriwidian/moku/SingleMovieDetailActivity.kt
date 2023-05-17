@@ -55,18 +55,10 @@ class SingleMovieDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-            apiService = ApiService(applicationContext, "id")
-
         val singleMovie = intent.extras!!.getSerializable("singleMovie") as SingleMovieResponseDTO
         val threadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         val fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN
         val movieTitle = singleMovie.name ?: singleMovie.title
-
-        window.setFlags(fullScreenFlag, fullScreenFlag)
-        setContentView(R.layout.activity_single_movie_detail)
-        StrictMode.setThreadPolicy(threadPolicy)
-        super.setTitle(movieTitle)
-
         val rootScrollMovieDetail : ScrollView = findViewById(R.id.rootScrollViewMovieDetail)
         val movieTitleDetail : TextView = findViewById(R.id.titleMovieDetail)
         val movieRating : RatingBar = findViewById(R.id.ratingBarMovieDDetail)
@@ -74,11 +66,17 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         val viewerTarget : TextView = findViewById(R.id.viewerTarget)
         val movieOverview : TextView = findViewById(R.id.movieOverview)
 
-            movieRatingTxt.text   = String.format("%.1f/10", singleMovie.vote_average)
-            movieRating.rating    = (singleMovie.vote_average/2).toFloat()
-            movieTitleDetail.text = movieTitle
-            viewerTarget.text     = if(singleMovie.adult) "+18" else "SU|BO"
-            movieOverview.text    = singleMovie.overview
+        apiService = ApiService(applicationContext, "id")
+        window.setFlags(fullScreenFlag, fullScreenFlag)
+        setContentView(R.layout.activity_single_movie_detail)
+        StrictMode.setThreadPolicy(threadPolicy)
+        super.setTitle(movieTitle)
+
+        movieRatingTxt.text   = String.format("%.1f/10", singleMovie.vote_average)
+        movieRating.rating    = (singleMovie.vote_average/2).toFloat()
+        movieTitleDetail.text = movieTitle
+        viewerTarget.text     = if(singleMovie.adult) "+18" else "SU|BO"
+        movieOverview.text    = singleMovie.overview
 
         //fetch more detail movie
         apiService.fetchMovieDetail(singleMovie.id){ result ->
