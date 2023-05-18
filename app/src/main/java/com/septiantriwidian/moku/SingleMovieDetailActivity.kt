@@ -109,7 +109,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                         movieTagGenresContainer.addView(buttonGenresInflater)
 
                         genreTagButton.setOnClickListener {
-                            val intent = Intent(applicationContext, MovieListByGenres::class.java)
+                            val intent = Intent(applicationContext, MovieListActivity::class.java)
                                         .putExtra("genreName", tagGenre.name)
                                         .putExtra("genreId", tagGenre.id)
                             startActivity(intent)

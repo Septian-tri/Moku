@@ -1,5 +1,6 @@
 package com.septiantriwidian.moku.service
 
+import android.app.DownloadManager.Query
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -42,7 +43,7 @@ class ApiService constructor(private val context : Context, language : String){
         val uri = baseUri?:String.format(ApiUrl.MOVIE_TRENDING_ENP + requestLanguage, trendingMedia)
 
         networkService.headerHost = ApiUrl.MOVIE_HOST
-        networkService.GET(uri.toString(), object  : Callback{
+        networkService.get(uri.toString(), object  : Callback{
 
             override fun onFailure(call: Call, e: IOException) {
                 println(e.localizedMessage)
@@ -80,7 +81,7 @@ class ApiService constructor(private val context : Context, language : String){
         val uri = baseUri?:(ApiUrl.MOVIE_LIST_GENRES_ENP + requestLanguage)
 
         networkService.headerHost = ApiUrl.MOVIE_HOST
-        networkService.GET(uri.toString(), object : Callback{
+        networkService.get(uri.toString(), object : Callback{
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
             }
@@ -108,7 +109,7 @@ class ApiService constructor(private val context : Context, language : String){
         val uri = baseUri?:(ApiUrl.MOVIE_LIST_BY_GENRE_ENP +  genreId + ApiUrl.MOVIE_PAGE_PARAM + page + requestLanguage)
 
         networkService.headerHost = ApiUrl.MOVIE_HOST
-        networkService.GET(uri.toString(), object : Callback{
+        networkService.get(uri.toString(), object : Callback{
 
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
@@ -138,7 +139,7 @@ class ApiService constructor(private val context : Context, language : String){
 
         val uri = baseUri?:(ApiUrl.IMAGE_COVER_ENP + posterPath)
         networkService.headerHost = ApiUrl.IMAGE_HOST
-        networkService.GET(uri.toString(), object : Callback {
+        networkService.get(uri.toString(), object : Callback {
 
             override fun onFailure(call: Call, e: IOException) {
                 resultImageCallback(failedImageAlt)
@@ -184,7 +185,7 @@ class ApiService constructor(private val context : Context, language : String){
         val uri = baseUri?:String.format(ApiUrl.MOVIE_TRAILER_ENP, movieId)
 
         networkService.headerHost = ApiUrl.MOVIE_HOST
-        networkService.GET(uri.toString(), object : Callback {
+        networkService.get(uri.toString(), object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 println(e.localizedMessage)
@@ -218,7 +219,7 @@ class ApiService constructor(private val context : Context, language : String){
         val uri = baseUri?:String.format(ApiUrl.MOVIE_DETAIL_ENP + requestLanguage, movieId)
 
         networkService.headerHost = ApiUrl.MOVIE_HOST
-        networkService.GET(uri.toString(), object : Callback{
+        networkService.get(uri.toString(), object : Callback{
             override fun onFailure(call: Call, e: IOException) {
                 println(e.localizedMessage)
                 e.printStackTrace()
@@ -249,7 +250,7 @@ class ApiService constructor(private val context : Context, language : String){
         val uri = baseUri?:String.format(ApiUrl.MOVIE_REVIEWS_ENP, movieId, page)
 
         networkService.headerHost = ApiUrl.MOVIE_HOST
-        networkService.GET(uri.toString(), object : Callback{
+        networkService.get(uri.toString(), object : Callback{
 
             override fun onFailure(call: Call, e: IOException) {
                 println(e.localizedMessage)
@@ -294,7 +295,7 @@ class ApiService constructor(private val context : Context, language : String){
 
             val uri = baseUri?:avatarEnp.trimStart('/')
 
-            networkService.GET(uri.toString(), object : Callback {
+            networkService.get(uri.toString(), object : Callback {
 
                     override fun onFailure(call: Call, e: IOException) {
                         avatarImageResult(failedImageAlt)
@@ -337,6 +338,33 @@ class ApiService constructor(private val context : Context, language : String){
         }else{
             avatarImageResult(failedImageAlt)
         }
+
+    }
+
+    fun fetchMovieSearch(query : String, page : Long, responseCallback : (moviesSearchResults : MoviesListResponseDTO) -> Unit){
+
+        networkService.headerHost = ApiUrl.MOVIE_HOST
+        networkService.get(String.format(ApiUrl.MOVIE_SEARCH_ENP, query, page), object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if(response.isSuccessful){
+                    if(response.body() != null){
+                        try {
+                            val response = response.body()!!.string()
+                            val parseJson = Gson().fromJson(response, MoviesListResponseDTO::class.java)
+                            responseCallback(parseJson)
+                        }catch (e : Exception){
+                            e.printStackTrace()
+                            println(e.localizedMessage)
+                        }
+                    }
+                }
+            }
+
+        })
 
     }
 

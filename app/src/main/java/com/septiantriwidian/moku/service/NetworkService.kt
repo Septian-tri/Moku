@@ -1,7 +1,6 @@
 package com.septiantriwidian.moku.service
 import com.septiantriwidian.moku.utils.constant.ApiUrl
 import okhttp3.*
-import java.util.Arrays
 import java.util.concurrent.TimeUnit
 
 class NetworkService {
@@ -39,7 +38,7 @@ class NetworkService {
         return connectionSpecList
     }
 
-    fun GET(url : String, callback: Callback) : Call{
+    fun get(url : String, callback: Callback){
 
         val request = Request
             .Builder()
@@ -50,11 +49,9 @@ class NetworkService {
 
         val call = okHttpClient.newCall(request)
         call.enqueue(callback)
-
-        return call
     }
 
-    fun headers() : Headers {
+    private fun headers() : Headers {
         return Headers
             .Builder()
             .add("Host", headerHost)

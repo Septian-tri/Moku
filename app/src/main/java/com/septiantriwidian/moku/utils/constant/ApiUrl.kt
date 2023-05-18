@@ -9,6 +9,7 @@ class ApiUrl(){
      * @param YOUTUBE_MOVIE_TRAILER_URI apply string format value with string data type
      * @param MOVIE_REVIEW_ENP apply string format value with number data type
      * @param MOVIE_TRENDING_ENP apply string format value with string data type base on MoviesTrendingMedia
+     * @param MOVIE_SEARCH_ENP apply string format value with string data type for query search and number data type for pages
      * */
 
     companion object {
@@ -27,11 +28,13 @@ class ApiUrl(){
                 const val IMAGE_COVER_ENP         = "$HOST_IMAGE_URL/t/p/w500"
                 const val MOVIE_LIST_GENRES_ENP   = "$MOVIE_HOST_URL/genre/movie/list$API_KEY_PARAM"
                 const val MOVIE_TRENDING_ENP      = "$MOVIE_HOST_URL/trending/%s/day$API_KEY_PARAM"
-                const val MOVIE_LIST_BY_GENRE_ENP = "$MOVIE_HOST_URL/discover/movie/$API_KEY_PARAM&with_genres="
+                const val MOVIE_LIST_BY_GENRE_ENP = "$MOVIE_HOST_URL/discover/movie$API_KEY_PARAM&with_genres="
+                const val MOVIE_SEARCH_ENP        = "$MOVIE_HOST_URL/search/movie$API_KEY_PARAM&query=%s&page=%d"
                 const val MOVIE_TRAILER_ENP       = "$MOVIE_HOST_URL/movie/%d/videos$API_KEY_PARAM"
                 const val MOVIE_DETAIL_ENP        = "$MOVIE_HOST_URL/movie/%d$API_KEY_PARAM"
                 const val MOVIE_REVIEWS_ENP       = "$MOVIE_HOST_URL/movie/%d/reviews$API_KEY_PARAM$MOVIE_PAGE_PARAM%d"
                 const val YOUTUBE_MOVIE_TRAILER_URI = "https://www.youtube.com/embed/%s?rel=0"
+
     }
 
 }

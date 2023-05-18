@@ -9,7 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="white_transparent">#9EFFFFFF</color>
     <color name="yellow_orange">#FFC107</color>
-    <color name="light_blue">#1B89E1</color>
+    <color name="light_blue">#09C4FD</color>
+    <color name="blue_sky">#099BFD</color>
     <color name="deeper_blue">#020412</color>
     <color name="transparent_deep_blue">#8F030319</color>
     <color name="transparent_deep_blue_2">#A4030319</color>
