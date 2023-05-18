@@ -18,6 +18,7 @@ import com.septiantriwidian.moku.dto.SingleMovieGenreResponseDTO
 import com.septiantriwidian.moku.adapter.SliderAdapterTrendingMovies
 import com.septiantriwidian.moku.service.ApiService
 import com.septiantriwidian.moku.utils.CustomActionBar
+import com.septiantriwidian.moku.utils.constant.IntentKey
 import com.septiantriwidian.moku.utils.constant.MovieDetailMediaType
 import com.septiantriwidian.moku.utils.constant.MoviesTrendingMedia
 import com.septiantriwidian.moku.utils.constant.ViewCardMoviesSetting
@@ -80,11 +81,11 @@ class MainActivity : AppCompatActivity() {
 
                     button.setOnClickListener {
                         val movieListByGenres = Intent(applicationContext, MovieListActivity::class.java)
-                        movieListByGenres.putExtra("genreId", genre.id)
-                        movieListByGenres.putExtra("genreName", genreName)
-                        movieListByGenres.putExtra("mediaMovie", MovieDetailMediaType.BY_ID_GENRE.name)
-                        movieListByGenres.putExtra("searchQuery", "")
-                        startActivity(movieListByGenres)
+                            movieListByGenres.putExtra(IntentKey.GENRE_ID.name, genre.id)
+                            movieListByGenres.putExtra(IntentKey.GENRE_NAME.name, genreName)
+                            movieListByGenres.putExtra(IntentKey.MEDIA_MOVIE.name, MovieDetailMediaType.BY_ID_GENRE.name)
+                            movieListByGenres.putExtra(IntentKey.SEARCH_QUERY.name, "")
+                            startActivity(movieListByGenres)
                     }
 
                     button.text = genreName

@@ -12,6 +12,7 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import com.septiantriwidian.moku.MovieListActivity
 import com.septiantriwidian.moku.R
+import com.septiantriwidian.moku.utils.constant.IntentKey
 import com.septiantriwidian.moku.utils.constant.MovieDetailMediaType
 
 class CustomActionBar (parentView : View, title : String?, backButton : Boolean, onBackPressedDispatcher: OnBackPressedDispatcher) : AppCompatActivity(){
@@ -65,11 +66,11 @@ class CustomActionBar (parentView : View, title : String?, backButton : Boolean,
 
     private fun searchMovie(query : String){
         val intent = Intent(parentView.context, MovieListActivity::class.java)
-        intent.putExtra("genreId", "")
-        intent.putExtra("genreName", "")
-        intent.putExtra("mediaMovie", MovieDetailMediaType.BY_SEARCH_QUERY.name)
-        intent.putExtra("searchQuery", query)
-        parentView.context.startActivity(intent)
+            intent.putExtra(IntentKey.GENRE_ID.name, "")
+            intent.putExtra(IntentKey.GENRE_NAME.name, "")
+            intent.putExtra(IntentKey.MEDIA_MOVIE.name, MovieDetailMediaType.BY_SEARCH_QUERY.name)
+            intent.putExtra(IntentKey.SEARCH_QUERY.name, query)
+            parentView.context.startActivity(intent)
     }
 
 }

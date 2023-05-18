@@ -347,6 +347,7 @@ class ApiService constructor(private val context : Context, language : String){
         networkService.get(String.format(ApiUrl.MOVIE_SEARCH_ENP, query, page), object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
+                println(e.localizedMessage)
             }
 
             override fun onResponse(call: Call, response: Response) {

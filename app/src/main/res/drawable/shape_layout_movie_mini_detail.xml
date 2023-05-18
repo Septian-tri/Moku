@@ -12,8 +12,8 @@
     </stroke>
 
     <corners
-        android:bottomLeftRadius="20dip"
-        android:bottomRightRadius="20dip">
+        android:bottomLeftRadius="10dip"
+        android:bottomRightRadius="10dip">
     </corners>
 
 </shape>

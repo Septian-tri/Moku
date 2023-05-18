@@ -3,15 +3,12 @@
     android:shape="rectangle"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@color/transparent_deep_blue_3">
-    </solid>
+    <solid android:color="@color/transparent_deep_blue_3"/>
 
     <stroke
         android:width="0dp"
-        android:color="@color/transparent_deep_blue_3">
-    </stroke>
+        android:color="@color/transparent_deep_blue_3"/>
 
-    <corners android:radius="20dip">
-    </corners>
+    <corners android:radius="10dip"/>
 
 </shape>

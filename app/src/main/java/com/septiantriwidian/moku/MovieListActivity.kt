@@ -22,6 +22,7 @@ import androidx.core.view.setMargins
 import com.septiantriwidian.moku.dto.MoviesListResponseDTO
 import com.septiantriwidian.moku.service.ApiService
 import com.septiantriwidian.moku.utils.CustomActionBar
+import com.septiantriwidian.moku.utils.constant.IntentKey
 import com.septiantriwidian.moku.utils.constant.MovieDetailMediaType
 import com.septiantriwidian.moku.utils.constant.ViewCardMoviesSetting
 import kotlinx.coroutines.Runnable
@@ -59,39 +60,38 @@ class MovieListActivity : AppCompatActivity() {
         val threadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         val fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN
         val intent = intent.extras
-        val genreId = intent!!.getLong("genreId")
-        val genreName = intent.getString("genreName") as String
-        val mediaMovie : String = intent.getString("mediaMovie") as String
-        val searchQuery : String = intent.getString("searchQuery") as String
+        val genreId = intent!!.getLong(IntentKey.GENRE_ID.name)
+        val genreName = intent.getString(IntentKey.GENRE_NAME.name) as String
+        val mediaMovie : String = intent.getString(IntentKey.MEDIA_MOVIE.name) as String
+        val searchQuery : String = intent.getString(IntentKey.SEARCH_QUERY.name) as String
         val parentScroll : ScrollView = findViewById(R.id.parentScrollView)
         val getDisplayResolution = windowManager.defaultDisplay
         val displayResolutionPoint = Point()
-        getDisplayResolution.getSize(displayResolutionPoint)
+            getDisplayResolution.getSize(displayResolutionPoint)
         val screenWidth = displayResolutionPoint.x
         val headerContainer : LinearLayout = findViewById(R.id.movieListHeader);
         val viewTitle = if(mediaMovie == MovieDetailMediaType.BY_ID_GENRE.name)  genreName!!.uppercase() else searchQuery
 
-            apiService = ApiService(applicationContext, "id")
-            CustomActionBar(headerContainer, viewTitle, true, onBackPressedDispatcher).inflateHeader()
-            window.setFlags(fullScreenFlag, fullScreenFlag)
-            StrictMode.setThreadPolicy(threadPolicy)
+        apiService = ApiService(applicationContext, "id")
+        window.setFlags(fullScreenFlag, fullScreenFlag)
+        CustomActionBar(headerContainer, viewTitle, true, onBackPressedDispatcher).inflateHeader()
+        StrictMode.setThreadPolicy(threadPolicy)
 
-            //setup the grid view card for list movies
-            scrollLayoutParent   = findViewById(R.id.parentLayoutMovieList)
-            cardViewHeight       = ViewCardMoviesSetting.MOVIE_CARDVIEW_HEIGHT
-            cardViewWidth        = ViewCardMoviesSetting.MOVIE_CARDVIEW_WIDTH
-            viewCardPerLine      = ceil((screenWidth/cardViewWidth).toDouble()).toInt()
-            calcCardViewMargin   = ((screenWidth - (viewCardPerLine*cardViewWidth)) / viewCardPerLine) / 2
-            cardViewLyParam      = LayoutParams(cardViewWidth, cardViewHeight)
-            movieStartPage       = 1
-            totalMoviePage       = 0
-            loadNewPage          = false
-            cardViewLyParam!!.setMargins(calcCardViewMargin)
+        //setup the grid view card for list movies
+        scrollLayoutParent   = findViewById(R.id.parentLayoutMovieList)
+        cardViewHeight       = ViewCardMoviesSetting.MOVIE_CARDVIEW_HEIGHT
+        cardViewWidth        = ViewCardMoviesSetting.MOVIE_CARDVIEW_WIDTH
+        viewCardPerLine      = ceil((screenWidth/cardViewWidth).toDouble()).toInt()
+        calcCardViewMargin   = ((screenWidth - (viewCardPerLine*cardViewWidth)) / viewCardPerLine) / 2
+        cardViewLyParam      = LayoutParams(cardViewWidth, cardViewHeight)
+        movieStartPage       = 1
+        totalMoviePage       = 0
+        loadNewPage          = false
+        cardViewLyParam!!.setMargins(calcCardViewMargin)
 
-
-            //giving  buffer progressbar animation for first time loaded page
-            bufferAnimate = LayoutInflater.from(applicationContext).inflate(R.layout.buffer_progressbar_animate, null) as ProgressBar
-            scrollLayoutParent.addView(bufferAnimate)
+        //giving  buffer progressbar animation for first time loaded page
+        bufferAnimate = LayoutInflater.from(applicationContext).inflate(R.layout.buffer_progressbar_animate, null) as ProgressBar
+        scrollLayoutParent.addView(bufferAnimate)
 
         //do endless scroll and load the movies lists
         val handler = Handler(Looper.getMainLooper())
@@ -99,14 +99,12 @@ class MovieListActivity : AppCompatActivity() {
             override fun onScrollChanged() {
 
                 fun checkNextPage() : Boolean{
-                    if(loadNewPage == true && totalMoviePage > 1 && movieStartPage <= totalMoviePage){
-
+                    if(loadNewPage && totalMoviePage > 1 && movieStartPage <= totalMoviePage){
                         loadNewPage = false
                         movieStartPage++
                         fetchMovie(genreId, searchQuery, mediaMovie)
                         return true
                     }
-
                     return false
                 }
 
@@ -119,16 +117,12 @@ class MovieListActivity : AppCompatActivity() {
                             }else{
                                 checkRepeatedLoadNextPage()
                             }
-
                         }
-
                     }, 1000)
                 }
 
                 if(parentScroll.scrollY >= (parentScroll.layoutParams.height-cardViewHeight)){
-
                     checkNextPage()
-
                     if(bufferAnimate.parent == null){
                         scrollLayoutParent.addView(bufferAnimate)
                         checkRepeatedLoadNextPage()

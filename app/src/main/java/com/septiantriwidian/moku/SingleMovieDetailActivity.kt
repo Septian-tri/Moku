@@ -25,6 +25,7 @@ import com.septiantriwidian.moku.dto.SingleMovieResponseDTO
 import com.septiantriwidian.moku.dto.SingleMovieReviewDetailResponsesDTO
 import com.septiantriwidian.moku.service.ApiService
 import com.septiantriwidian.moku.service.NetworkService
+import com.septiantriwidian.moku.utils.CustomActionBar
 import com.septiantriwidian.moku.utils.constant.ApiUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,11 +67,12 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         val movieRatingTxt : TextView = findViewById(R.id.ratingTextMovieDetail)
         val viewerTarget : TextView = findViewById(R.id.viewerTarget)
         val movieOverview : TextView = findViewById(R.id.movieOverview)
+        val header : LinearLayout = findViewById(R.id.movieDetailHeader)
 
         apiService = ApiService(applicationContext, "id")
         window.setFlags(fullScreenFlag, fullScreenFlag)
+        CustomActionBar(header, movieTitle, true, onBackPressedDispatcher).inflateHeader()
         StrictMode.setThreadPolicy(threadPolicy)
-        super.setTitle(movieTitle)
 
         movieRatingTxt.text   = String.format("%.1f/10", singleMovie.vote_average)
         movieRating.rating    = (singleMovie.vote_average/2).toFloat()

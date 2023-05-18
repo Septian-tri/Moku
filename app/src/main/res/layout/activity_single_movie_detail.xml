@@ -1,229 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".SingleMovieDetailActivity"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".SingleMovieDetailActivity"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-        <ImageView
-                android:id="@+id/movieDetailBackgroundImage"
-                android:scaleType="centerCrop"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/movieDetailHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent">
 
-        <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/rootScrollViewMovieDetail"
-                android:orientation="vertical">
-
-                <LinearLayout
-                        android:id="@+id/rootLayoutScrollMovieDetail"
-                        android:orientation="vertical"
+                <ImageView
+                        android:id="@+id/movieDetailBackgroundImage"
+                        android:scaleType="centerCrop"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"/>
 
-                        <WebView
-                                android:id="@+id/movieTrailer"
-                                android:layout_width="match_parent"
-                                android:layout_height="240dp">
-
-                                <LinearLayout
-                                        android:id="@+id/layoutWebViewLoading"
-                                        android:gravity="center"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
-
-                                        <ProgressBar
-                                                android:visibility="visible"
-                                                android:layout_gravity="center"
-                                                android:layout_width="50dp"
-                                                android:layout_height="50dp"/>
-
-                                </LinearLayout>
-
-                        </WebView>
+                <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/rootScrollViewMovieDetail"
+                        android:orientation="vertical">
 
                         <LinearLayout
-                                android:padding="5dp"
-                                android:background="@drawable/shape_layout_movie_mini_detail"
+                                android:id="@+id/rootLayoutScrollMovieDetail"
                                 android:orientation="vertical"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:layout_height="match_parent">
 
-                                <HorizontalScrollView
-                                        android:id="@+id/rootScrollMovieDetailGenres"
-                                        android:layout_marginBottom="5dp"
+                                <WebView
+                                        android:id="@+id/movieTrailer"
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
+                                        android:layout_height="240dp">
 
                                         <LinearLayout
-                                                android:layout_gravity="start"
-                                                android:orientation="horizontal"
-                                                android:id="@+id/genresTagMovieDetail"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"/>
+                                                android:id="@+id/layoutWebViewLoading"
+                                                android:gravity="center"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent">
 
-                                </HorizontalScrollView>
+                                                <ProgressBar
+                                                        android:visibility="visible"
+                                                        android:layout_gravity="center"
+                                                        android:layout_width="50dp"
+                                                        android:layout_height="50dp"/>
+
+                                        </LinearLayout>
+
+                                </WebView>
 
                                 <LinearLayout
                                         android:padding="5dp"
-                                        android:orientation="horizontal"
+                                        android:background="@drawable/shape_layout_movie_mini_detail"
+                                        android:orientation="vertical"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content">
 
-                                        <FrameLayout
-                                                android:id="@+id/rootMiniCoverMovieDetail"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content">
-
-                                                <ImageView
-                                                        android:background="@drawable/shape_layout_mini_cover_movie"
-                                                        android:id="@+id/movieMiniCover"
-                                                        android:layout_gravity="center"
-                                                        android:scaleType="centerCrop"
-                                                        android:layout_width="80dp"
-                                                        android:layout_height="110dp"
-                                                        android:contentDescription="@string/mini_cover_movie"/>
-
-                                                <ProgressBar
-                                                        android:id="@+id/movieMiniCoverLoading"
-                                                        android:layout_gravity="center"
-                                                        android:layout_width="20dp"
-                                                        android:layout_height="20dp" />
-                                        </FrameLayout>
-
-                                        <LinearLayout
-                                                android:layout_gravity="center"
-                                                android:orientation="vertical"
+                                        <HorizontalScrollView
+                                                android:id="@+id/rootScrollMovieDetailGenres"
+                                                android:layout_marginBottom="5dp"
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content">
 
-                                                <TextView
-                                                        android:id="@+id/titleMovieDetail"
-                                                        android:textSize="14dp"
-                                                        android:padding="10dp"
-                                                        android:layout_width="match_parent"
+                                                <LinearLayout
+                                                        android:layout_gravity="start"
+                                                        android:orientation="horizontal"
+                                                        android:id="@+id/genresTagMovieDetail"
+                                                        android:layout_width="wrap_content"
                                                         android:layout_height="wrap_content"/>
 
+                                        </HorizontalScrollView>
+
+                                        <LinearLayout
+                                                android:padding="5dp"
+                                                android:orientation="horizontal"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content">
+
                                                 <FrameLayout
-                                                        android:orientation="horizontal"
+                                                        android:id="@+id/rootMiniCoverMovieDetail"
+                                                        android:layout_width="wrap_content"
+                                                        android:layout_height="wrap_content">
+
+                                                        <ImageView
+                                                                android:background="@drawable/shape_layout_mini_cover_movie"
+                                                                android:id="@+id/movieMiniCover"
+                                                                android:layout_gravity="center"
+                                                                android:scaleType="centerCrop"
+                                                                android:layout_width="80dp"
+                                                                android:layout_height="110dp"
+                                                                android:contentDescription="@string/mini_cover_movie"/>
+
+                                                        <ProgressBar
+                                                                android:id="@+id/movieMiniCoverLoading"
+                                                                android:layout_gravity="center"
+                                                                android:layout_width="20dp"
+                                                                android:layout_height="20dp" />
+                                                </FrameLayout>
+
+                                                <LinearLayout
+                                                        android:layout_gravity="center"
+                                                        android:orientation="vertical"
                                                         android:layout_width="match_parent"
                                                         android:layout_height="wrap_content">
 
                                                         <TextView
-                                                                android:id="@+id/movieDuration"
-                                                                android:layout_gravity="start|center_vertical"
-                                                                android:paddingLeft="10dp"
-                                                                android:paddingRight="10dp"
-                                                                android:textSize="11dp"
-                                                                android:layout_width="wrap_content"
+                                                                android:id="@+id/titleMovieDetail"
+                                                                android:textSize="14dp"
+                                                                android:padding="10dp"
+                                                                android:layout_width="match_parent"
                                                                 android:layout_height="wrap_content"/>
 
-                                                        <LinearLayout
-                                                                android:layout_gravity="center"
+                                                        <FrameLayout
                                                                 android:orientation="horizontal"
-                                                                android:layout_width="wrap_content"
+                                                                android:layout_width="match_parent"
                                                                 android:layout_height="wrap_content">
 
-                                                                <androidx.appcompat.widget.AppCompatRatingBar
-                                                                        android:layout_gravity="center"
-                                                                        android:id="@+id/ratingBarMovieDDetail"
-                                                                        style="@style/Widget.AppCompat.RatingBar.Small"
+                                                                <TextView
+                                                                        android:id="@+id/movieDuration"
+                                                                        android:layout_gravity="start|center_vertical"
+                                                                        android:paddingLeft="10dp"
+                                                                        android:paddingRight="10dp"
+                                                                        android:textSize="11dp"
                                                                         android:layout_width="wrap_content"
                                                                         android:layout_height="wrap_content"/>
+
+                                                                <LinearLayout
+                                                                        android:layout_gravity="center"
+                                                                        android:orientation="horizontal"
+                                                                        android:layout_width="wrap_content"
+                                                                        android:layout_height="wrap_content">
+
+                                                                        <androidx.appcompat.widget.AppCompatRatingBar
+                                                                                android:layout_gravity="center"
+                                                                                android:id="@+id/ratingBarMovieDDetail"
+                                                                                style="@style/Widget.AppCompat.RatingBar.Small"
+                                                                                android:layout_width="wrap_content"
+                                                                                android:layout_height="wrap_content"/>
+
+                                                                        <TextView
+                                                                                android:layout_marginLeft="5dp"
+                                                                                android:textSize="11dp"
+                                                                                android:id="@+id/ratingTextMovieDetail"
+                                                                                android:layout_gravity="center"
+                                                                                android:layout_width="wrap_content"
+                                                                                android:layout_height="wrap_content"/>
+
+                                                                </LinearLayout>
 
                                                                 <TextView
-                                                                        android:layout_marginLeft="5dp"
+                                                                        android:id="@+id/viewerTarget"
+                                                                        android:layout_gravity="end|center_horizontal|center_vertical"
+                                                                        android:paddingLeft="10dp"
+                                                                        android:paddingRight="10dp"
                                                                         android:textSize="11dp"
-                                                                        android:id="@+id/ratingTextMovieDetail"
-                                                                        android:layout_gravity="center"
                                                                         android:layout_width="wrap_content"
                                                                         android:layout_height="wrap_content"/>
 
-                                                        </LinearLayout>
+                                                        </FrameLayout>
 
                                                         <TextView
-                                                                android:id="@+id/viewerTarget"
-                                                                android:layout_gravity="end|center_horizontal|center_vertical"
+                                                                android:id="@+id/movieTagLine"
                                                                 android:paddingLeft="10dp"
                                                                 android:paddingRight="10dp"
-                                                                android:textSize="11dp"
+                                                                android:paddingTop="5dp"
+                                                                android:paddingBottom="5dp"
+                                                                android:textSize="11sp"
                                                                 android:layout_width="wrap_content"
-                                                                android:layout_height="wrap_content"/>
+                                                                android:layout_height="match_parent"/>
 
-                                                </FrameLayout>
-
-                                                <TextView
-                                                        android:id="@+id/movieTagLine"
-                                                        android:paddingLeft="10dp"
-                                                        android:paddingRight="10dp"
-                                                        android:paddingTop="5dp"
-                                                        android:paddingBottom="5dp"
-                                                        android:textSize="11sp"
-                                                        android:layout_width="wrap_content"
-                                                        android:layout_height="match_parent"/>
+                                                </LinearLayout>
 
                                         </LinearLayout>
 
                                 </LinearLayout>
 
+                                <LinearLayout
+                                        android:background="@drawable/shape_layout_movie_detail"
+                                        android:orientation="vertical"
+                                        android:layout_marginTop="30dp"
+                                        android:padding="10dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:textSize="16dp"
+                                                android:text="Ikhtisar Film"/>
+
+                                        <TextView
+                                                android:textAlignment="textStart"
+                                                android:layout_gravity="start"
+                                                android:layout_marginTop="10dp"
+                                                android:layout_marginBottom="20dp"
+                                                android:textSize="14dp"
+                                                android:id="@+id/movieOverview"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"/>
+
+                                        <TableLayout
+                                                android:id="@+id/tableMovieDetail"
+                                                android:layout_height="wrap_content"
+                                                android:layout_width="wrap_content">
+
+                                        </TableLayout>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                        android:background="@drawable/shape_layout_movie_review"
+                                        android:layout_marginTop="30dp"
+                                        android:orientation="vertical"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_gravity="top|start"
+                                            android:textSize="16sp"
+                                            android:padding="10dp"
+                                            android:text="Review Film"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"/>
+
+                                        <androidx.core.widget.NestedScrollView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="320dp">
+
+                                                <LinearLayout
+                                                    android:orientation="vertical"
+                                                    android:id="@+id/rootReviewLayout"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content"/>
+
+                                        </androidx.core.widget.NestedScrollView>
+
+                                </LinearLayout>
+
                         </LinearLayout>
 
-                        <LinearLayout
-                                android:background="@drawable/shape_layout_movie_detail"
-                                android:orientation="vertical"
-                                android:layout_marginTop="30dp"
-                                android:padding="10dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                </ScrollView>
 
-                                <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="16dp"
-                                        android:text="Ikhtisar Film"/>
+        </FrameLayout>
 
-                                <TextView
-                                        android:textAlignment="textStart"
-                                        android:layout_gravity="start"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_marginBottom="20dp"
-                                        android:textSize="14dp"
-                                        android:id="@+id/movieOverview"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"/>
-
-                                <TableLayout
-                                        android:id="@+id/tableMovieDetail"
-                                        android:layout_height="wrap_content"
-                                        android:layout_width="wrap_content">
-
-                                </TableLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                                android:layout_marginTop="30dp"
-                                android:padding="10dp"
-                                android:id="@+id/rootReviewLayout"
-                                android:orientation="vertical"
-                                android:background="@drawable/shape_layout_movie_review"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <TextView
-                                        android:layout_marginBottom="20dp"
-                                        android:textSize="16dp"
-                                        android:text="Review Film"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"/>
-
-                        </LinearLayout>
-
-                </LinearLayout>
-
-        </ScrollView>
-
-</FrameLayout>
+</LinearLayout>
