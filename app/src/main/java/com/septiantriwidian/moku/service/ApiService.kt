@@ -1,6 +1,5 @@
 package com.septiantriwidian.moku.service
 
-import android.app.DownloadManager.Query
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
