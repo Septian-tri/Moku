@@ -315,9 +315,10 @@ class SingleMovieDetailActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
 
         if(::webViewTrailer.isInitialized){
+            webViewTrailer.clearHistory()
+            webViewTrailer.destroyDrawingCache()
             webViewTrailer.clearCache(true)
             webViewTrailer.destroy()
         }

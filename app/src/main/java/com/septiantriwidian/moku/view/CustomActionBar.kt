@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.webkit.WebView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -47,8 +48,18 @@ class CustomActionBar (parentView : View, title : String?, backButton : Boolean,
             backButtonView.visibility= Button.GONE
         }else{
             backButtonView.setOnClickListener {
-                (parentView.rootView.context     as Activity).finish()
-                onBackPressedDispatcher.onBackPressed()
+                val activity = parentView.rootView.context as Activity
+                val webView = activity.findViewById<WebView>(R.id.movieTrailer)
+
+                if(webView !== null && webView.isActivated){
+                    webView.clearHistory()
+                    webView.clearCache(true)
+                    webView.destroy()
+                }
+
+                activity.finishAndRemoveTask()
+                activity.finish()
+                activity.onBackPressed()
             }
         }
 
