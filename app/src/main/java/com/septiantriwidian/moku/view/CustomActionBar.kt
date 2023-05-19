@@ -1,4 +1,4 @@
-package com.septiantriwidian.moku.utils
+package com.septiantriwidian.moku.view
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -56,7 +56,7 @@ class CustomActionBar (parentView : View, title : String?, backButton : Boolean,
             searchField.onEditorAction(EditorInfo.IME_ACTION_DONE)
         }
 
-        searchField.setOnEditorActionListener { _, actionId, event ->
+        searchField.setOnEditorActionListener { _, actionId, _ ->
             if(actionId == EditorInfo.IME_ACTION_SEARCH){
                 searchMovie(searchField.text.toString())
             }
@@ -65,12 +65,16 @@ class CustomActionBar (parentView : View, title : String?, backButton : Boolean,
     }
 
     private fun searchMovie(query : String){
-        val intent = Intent(parentView.context, MovieListActivity::class.java)
+        if (!query.matches(Regex("^\\s*$"))){
+            val intent = Intent(parentView.context, MovieListActivity::class.java)
             intent.putExtra(IntentKey.GENRE_ID.name, "")
             intent.putExtra(IntentKey.GENRE_NAME.name, "")
             intent.putExtra(IntentKey.MEDIA_MOVIE.name, MovieDetailMediaType.BY_SEARCH_QUERY.name)
             intent.putExtra(IntentKey.SEARCH_QUERY.name, query)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
             parentView.context.startActivity(intent)
+        }
     }
 
 }

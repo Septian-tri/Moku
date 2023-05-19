@@ -2,6 +2,7 @@
 
     <style name="Theme.Moku" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@color/deeper_blue_2</item>
     </style>
 
     <style name="singleMovieCoverTextDetail" parent="Theme.AppCompat">

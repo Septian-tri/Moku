@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.septiantriwidian.moku.dto.SingleMovieGenreResponseDTO
 import com.septiantriwidian.moku.adapter.SliderAdapterTrendingMovies
 import com.septiantriwidian.moku.service.ApiService
-import com.septiantriwidian.moku.utils.CustomActionBar
+import com.septiantriwidian.moku.view.CustomActionBar
 import com.septiantriwidian.moku.utils.constant.IntentKey
 import com.septiantriwidian.moku.utils.constant.MovieDetailMediaType
 import com.septiantriwidian.moku.utils.constant.MoviesTrendingMedia

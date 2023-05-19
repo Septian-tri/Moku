@@ -25,7 +25,7 @@ import com.septiantriwidian.moku.dto.SingleMovieResponseDTO
 import com.septiantriwidian.moku.dto.SingleMovieReviewDetailResponsesDTO
 import com.septiantriwidian.moku.service.ApiService
 import com.septiantriwidian.moku.service.NetworkService
-import com.septiantriwidian.moku.utils.CustomActionBar
+import com.septiantriwidian.moku.view.CustomActionBar
 import com.septiantriwidian.moku.utils.constant.ApiUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,6 +67,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         val movieRatingTxt : TextView = findViewById(R.id.ratingTextMovieDetail)
         val viewerTarget : TextView = findViewById(R.id.viewerTarget)
         val movieOverview : TextView = findViewById(R.id.movieOverview)
+        val movieMedia : TextView = findViewById(R.id.movieMedia)
         val header : LinearLayout = findViewById(R.id.movieDetailHeader)
 
         apiService = ApiService(applicationContext, "id")
@@ -79,53 +80,51 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         movieTitleDetail.text = movieTitle
         viewerTarget.text     = if(singleMovie.adult) "+18" else "SU|BO"
         movieOverview.text    = singleMovie.overview
+        movieMedia.text       = if (singleMovie.media_type == "tv") "Serial Televisi" else "Layar Lebar"
 
         //fetch more detail movie
         apiService.fetchMovieDetail(singleMovie.id){ result ->
-            this@SingleMovieDetailActivity.runOnUiThread(object : Runnable{
-                override fun run() {
+            this@SingleMovieDetailActivity.runOnUiThread(Runnable {
+                val movieDurationTV : TextView = findViewById(R.id.movieDuration)
+                val movieTagLineTV : TextView = findViewById(R.id.movieTagLine)
+                val movieDetailTable : TableLayout = findViewById(R.id.tableMovieDetail)
+                val movieTagGenresContainer : LinearLayout = findViewById(R.id.genresTagMovieDetail)
+                val movieTagGenres = result.genres
+                val durationHours  = Math.floor((result.runtime/60).toDouble()).toInt()
+                val durationMinute = result.runtime-(durationHours*60)
+                val durationSecond = Math.floor((durationMinute/60).toDouble()).toInt()*60
+                val durationMinutePrefix = if(durationMinute <= 9) "0$durationMinute" else durationMinute
+                val durationHourPrefix   = if(durationHours <= 9) "0$durationHours" else durationHours
+                val durationSecondPrefix = if(durationSecond <= 9) "0$durationSecond" else durationSecond
+                val finalDuration = "$durationHourPrefix:$durationMinutePrefix:$durationSecondPrefix"
+                val movieTagLine = if (result.tagline.equals("")) "Tidak Ada Tagline" else result.tagline
 
-                    val movieDurationTV : TextView = findViewById(R.id.movieDuration)
-                    val movieTagLineTV : TextView = findViewById(R.id.movieTagLine)
-                    val movieDetailTable : TableLayout = findViewById(R.id.tableMovieDetail)
-                    val movieTagGenresContainer : LinearLayout = findViewById(R.id.genresTagMovieDetail)
-                    val movieTagGenres = result.genres
-                    val durationHours  = Math.floor((result.runtime/60).toDouble()).toInt()
-                    val durationMinute = result.runtime-(durationHours*60)
-                    val durationSecond = Math.floor((durationMinute/60).toDouble()).toInt()*60
-                    val durationMinutePrefix = if(durationMinute <= 9) "0$durationMinute" else durationMinute
-                    val durationHourPrefix   = if(durationHours <= 9) "0$durationHours" else durationHours
-                    val durationSecondPrefix = if(durationSecond <= 9) "0$durationSecond" else durationSecond
-                    val finalDuration = "$durationHourPrefix:$durationMinutePrefix:$durationSecondPrefix"
-                    val movieTagLine = if (result.tagline.equals("")) "Tidak Ada Tagline" else result.tagline
+                movieDurationTV.text = finalDuration
+                movieTagLineTV.text = movieTagLine
 
-                    movieDurationTV.text = finalDuration
-                    movieTagLineTV.text = movieTagLine
+                for(tagGenre : SingleMovieGenreResponseDTO in movieTagGenres){
 
-                    for(tagGenre : SingleMovieGenreResponseDTO in movieTagGenres){
+                    val buttonGenresInflater = LayoutInflater.from(applicationContext).inflate(R.layout.movie_genres_button_template, null)
+                    val genreTagButton : TextView = buttonGenresInflater.findViewById(R.id.buttonGenres)
 
-                        val buttonGenresInflater = LayoutInflater.from(applicationContext).inflate(R.layout.movie_genres_button_template, null)
-                        val genreTagButton : TextView = buttonGenresInflater.findViewById(R.id.buttonGenres)
+                    genreTagButton.text = tagGenre.name.uppercase()
+                    movieTagGenresContainer.addView(buttonGenresInflater)
 
-                        genreTagButton.text = tagGenre.name.uppercase()
-                        movieTagGenresContainer.addView(buttonGenresInflater)
-
-                        genreTagButton.setOnClickListener {
-                            val intent = Intent(applicationContext, MovieListActivity::class.java)
-                                        .putExtra("genreName", tagGenre.name)
-                                        .putExtra("genreId", tagGenre.id)
-                            startActivity(intent)
-                        }
-
+                    genreTagButton.setOnClickListener {
+                        val intent = Intent(applicationContext, MovieListActivity::class.java)
+                            .putExtra("genreName", tagGenre.name)
+                            .putExtra("genreId", tagGenre.id)
+                        startActivity(intent)
                     }
-
-                    movieDetailTable.addView(rowTable("Status Rilis", result.status))
-                    movieDetailTable.addView(rowTable("Tanggal Rilis", singleMovie.release_date))
-                    movieDetailTable.addView(rowTable("Anggaran", result.budget.toString()))
-                    movieDetailTable.addView(rowTable("Pendapatan", result.revenue.toString()))
 
                 }
 
+                movieDetailTable.addView(rowTable("Judul ", movieTitle))
+                movieDetailTable.addView(rowTable("Judul Asli", singleMovie.original_title))
+                movieDetailTable.addView(rowTable("Status Rilis", result.status))
+                movieDetailTable.addView(rowTable("Tanggal Rilis", singleMovie.release_date))
+                movieDetailTable.addView(rowTable("Anggaran", result.budget.toString()))
+                movieDetailTable.addView(rowTable("Pendapatan", result.revenue.toString()))
             })
 
         }
@@ -133,12 +132,10 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         //fetch image for mini cover
         val miniCover : ImageView = findViewById(R.id.movieMiniCover)
         apiService.fetchImage(singleMovie.poster_path){ result ->
-            this@SingleMovieDetailActivity.runOnUiThread(object : Runnable{
-                override fun run() {
-                    val parentMiniCover = miniCover.parent as ViewGroup
-                    parentMiniCover.removeView(parentMiniCover.findViewById(R.id.movieMiniCoverLoading))
-                    miniCover.setImageBitmap(result)
-                }
+            this@SingleMovieDetailActivity.runOnUiThread(Runnable {
+                val parentMiniCover = miniCover.parent as ViewGroup
+                parentMiniCover.removeView(parentMiniCover.findViewById(R.id.movieMiniCoverLoading))
+                miniCover.setImageBitmap(result)
             })
         }
 
@@ -146,11 +143,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         val scrollView : ImageView = findViewById(R.id.movieDetailBackgroundImage)
         if(singleMovie.backdrop_path !== null){
             apiService.fetchImage(singleMovie.backdrop_path){ imageResult ->
-                this@SingleMovieDetailActivity.runOnUiThread(object : Runnable{
-                    override fun run() {
-                        scrollView.setImageBitmap(imageResult)
-                    }
-                })
+                this@SingleMovieDetailActivity.runOnUiThread(Runnable { scrollView.setImageBitmap(imageResult) })
             }
         }
 
@@ -179,39 +172,36 @@ class SingleMovieDetailActivity : AppCompatActivity() {
             }
 
             if(siteSourceTrailer.equals("YouTube")) {
-                this@SingleMovieDetailActivity.runOnUiThread(object : Runnable {
-                    override fun run() {
+                this@SingleMovieDetailActivity.runOnUiThread(Runnable {
+                    val trailerUri = String.format(ApiUrl.YOUTUBE_MOVIE_TRAILER_URI, trailerKeyId)
+                    var hardwareAccelerateFlag = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
 
-                        val trailerUri = String.format(ApiUrl.YOUTUBE_MOVIE_TRAILER_URI, trailerKeyId)
-                        var hardwareAccelerateFlag = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+                    window.setFlags(hardwareAccelerateFlag, hardwareAccelerateFlag)
 
-                        window.setFlags(hardwareAccelerateFlag, hardwareAccelerateFlag)
+                    //activated the web view for watching the movie trailer
+                    webViewTrailer = findViewById(R.id.movieTrailer)
+                    webViewTrailer.settings.javaScriptEnabled = true
+                    webViewTrailer.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
+                    webViewTrailer.settings.userAgentString = NetworkService().userAgent
+                    webViewTrailer.settings.useWideViewPort = true
+                    webViewTrailer.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                    webViewTrailer.webChromeClient = WebChromeClient()
+                    webViewTrailer.webViewClient = object : WebViewClient(){
 
-                        //activated the web view for watching the movie trailer
-                        webViewTrailer = findViewById(R.id.movieTrailer)
-                        webViewTrailer.settings.javaScriptEnabled = true
-                        webViewTrailer.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
-                        webViewTrailer.settings.userAgentString = NetworkService().userAgent
-                        webViewTrailer.settings.useWideViewPort = true
-                        webViewTrailer.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-                        webViewTrailer.webChromeClient = WebChromeClient()
-                        webViewTrailer.webViewClient = object : WebViewClient(){
-
-                            override fun onPageFinished(view: WebView?, url: String?) {
-                                webViewTrailer.removeView(webViewTrailer.findViewById(R.id.layoutWebViewLoading))
-                            }
-
-                            override fun onReceivedSslError(
-                                view: WebView?,
-                                handler: SslErrorHandler?,
-                                error: SslError?
-                            ) {
-                                handler!!.proceed()
-                            }
-
+                        override fun onPageFinished(view: WebView?, url: String?) {
+                            webViewTrailer.removeView(webViewTrailer.findViewById(R.id.layoutWebViewLoading))
                         }
-                        webViewTrailer.loadUrl(trailerUri)
+
+                        override fun onReceivedSslError(
+                            view: WebView?,
+                            handler: SslErrorHandler?,
+                            error: SslError?
+                        ) {
+                            handler!!.proceed()
+                        }
+
                     }
+                    webViewTrailer.loadUrl(trailerUri)
                 })
             }
 

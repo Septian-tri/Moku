@@ -57,20 +57,21 @@
                                 </WebView>
 
                                 <LinearLayout
-                                        android:padding="5dp"
+                                        android:layout_gravity="start|center"
+                                        android:padding="10dp"
                                         android:background="@drawable/shape_layout_movie_mini_detail"
                                         android:orientation="vertical"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content">
 
                                         <HorizontalScrollView
+                                                android:padding="0dp"
                                                 android:id="@+id/rootScrollMovieDetailGenres"
                                                 android:layout_marginBottom="5dp"
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content">
 
                                                 <LinearLayout
-                                                        android:layout_gravity="start"
                                                         android:orientation="horizontal"
                                                         android:id="@+id/genresTagMovieDetail"
                                                         android:layout_width="wrap_content"
@@ -78,13 +79,13 @@
 
                                         </HorizontalScrollView>
 
-                                        <LinearLayout
-                                                android:padding="5dp"
+                                        <FrameLayout
                                                 android:orientation="horizontal"
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content">
 
                                                 <FrameLayout
+                                                        android:layout_gravity="start|center"
                                                         android:id="@+id/rootMiniCoverMovieDetail"
                                                         android:layout_width="wrap_content"
                                                         android:layout_height="wrap_content">
@@ -92,7 +93,6 @@
                                                         <ImageView
                                                                 android:background="@drawable/shape_layout_mini_cover_movie"
                                                                 android:id="@+id/movieMiniCover"
-                                                                android:layout_gravity="center"
                                                                 android:scaleType="centerCrop"
                                                                 android:layout_width="80dp"
                                                                 android:layout_height="110dp"
@@ -106,19 +106,24 @@
                                                 </FrameLayout>
 
                                                 <LinearLayout
+                                                        android:layout_marginTop="10dp"
+                                                        android:layout_marginBottom="10dp"
+                                                        android:paddingStart="90dp"
                                                         android:layout_gravity="center"
                                                         android:orientation="vertical"
                                                         android:layout_width="match_parent"
-                                                        android:layout_height="wrap_content">
+                                                        android:layout_height="match_parent">
 
                                                         <TextView
                                                                 android:id="@+id/titleMovieDetail"
-                                                                android:textSize="14dp"
-                                                                android:padding="10dp"
+                                                                android:textSize="14sp"
                                                                 android:layout_width="match_parent"
                                                                 android:layout_height="wrap_content"/>
 
                                                         <FrameLayout
+                                                                android:layout_marginTop="5dp"
+                                                                android:layout_marginBottom="5dp"
+                                                                android:layout_gravity="start|center"
                                                                 android:orientation="horizontal"
                                                                 android:layout_width="match_parent"
                                                                 android:layout_height="wrap_content">
@@ -126,9 +131,7 @@
                                                                 <TextView
                                                                         android:id="@+id/movieDuration"
                                                                         android:layout_gravity="start|center_vertical"
-                                                                        android:paddingLeft="10dp"
-                                                                        android:paddingRight="10dp"
-                                                                        android:textSize="11dp"
+                                                                        android:textSize="11sp"
                                                                         android:layout_width="wrap_content"
                                                                         android:layout_height="wrap_content"/>
 
@@ -146,8 +149,8 @@
                                                                                 android:layout_height="wrap_content"/>
 
                                                                         <TextView
-                                                                                android:layout_marginLeft="5dp"
-                                                                                android:textSize="11dp"
+                                                                                android:layout_marginStart="5dp"
+                                                                                android:textSize="11sp"
                                                                                 android:id="@+id/ratingTextMovieDetail"
                                                                                 android:layout_gravity="center"
                                                                                 android:layout_width="wrap_content"
@@ -158,27 +161,31 @@
                                                                 <TextView
                                                                         android:id="@+id/viewerTarget"
                                                                         android:layout_gravity="end|center_horizontal|center_vertical"
-                                                                        android:paddingLeft="10dp"
-                                                                        android:paddingRight="10dp"
-                                                                        android:textSize="11dp"
+                                                                        android:textSize="11sp"
                                                                         android:layout_width="wrap_content"
                                                                         android:layout_height="wrap_content"/>
 
                                                         </FrameLayout>
 
                                                         <TextView
+                                                                android:layout_gravity="start|center"
                                                                 android:id="@+id/movieTagLine"
-                                                                android:paddingLeft="10dp"
-                                                                android:paddingRight="10dp"
-                                                                android:paddingTop="5dp"
-                                                                android:paddingBottom="5dp"
                                                                 android:textSize="11sp"
                                                                 android:layout_width="wrap_content"
                                                                 android:layout_height="match_parent"/>
 
+                                                        <TextView
+                                                            android:layout_gravity="start|center"
+                                                            android:id="@+id/movieMedia"
+                                                            android:paddingTop="5dp"
+                                                            android:paddingBottom="5dp"
+                                                            android:textSize="11sp"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="match_parent"/>
+
                                                 </LinearLayout>
 
-                                        </LinearLayout>
+                                        </FrameLayout>
 
                                 </LinearLayout>
 
@@ -193,7 +200,7 @@
                                         <TextView
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
-                                                android:textSize="16dp"
+                                                android:textSize="17dp"
                                                 android:text="Ikhtisar Film"/>
 
                                         <TextView
@@ -201,7 +208,7 @@
                                                 android:layout_gravity="start"
                                                 android:layout_marginTop="10dp"
                                                 android:layout_marginBottom="20dp"
-                                                android:textSize="14dp"
+                                                android:textSize="16sp"
                                                 android:id="@+id/movieOverview"
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"/>
@@ -224,7 +231,7 @@
 
                                         <TextView
                                             android:layout_gravity="top|start"
-                                            android:textSize="16sp"
+                                            android:textSize="17sp"
                                             android:padding="10dp"
                                             android:text="Review Film"
                                             android:layout_width="match_parent"
@@ -232,7 +239,7 @@
 
                                         <androidx.core.widget.NestedScrollView
                                             android:layout_width="match_parent"
-                                            android:layout_height="wrap_content">
+                                            android:layout_height="320dp">
 
                                                 <LinearLayout
                                                     android:orientation="vertical"

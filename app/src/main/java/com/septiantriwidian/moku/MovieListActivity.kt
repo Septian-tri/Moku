@@ -21,11 +21,12 @@ import android.widget.TextView
 import androidx.core.view.setMargins
 import com.septiantriwidian.moku.dto.MoviesListResponseDTO
 import com.septiantriwidian.moku.service.ApiService
-import com.septiantriwidian.moku.utils.CustomActionBar
+import com.septiantriwidian.moku.view.CustomActionBar
 import com.septiantriwidian.moku.utils.constant.IntentKey
 import com.septiantriwidian.moku.utils.constant.MovieDetailMediaType
 import com.septiantriwidian.moku.utils.constant.ViewCardMoviesSetting
 import kotlinx.coroutines.Runnable
+import java.net.URLEncoder
 import kotlin.math.ceil
 
 class MovieListActivity : AppCompatActivity() {
@@ -208,7 +209,7 @@ class MovieListActivity : AppCompatActivity() {
                 loadMovie(result)
             }
         }else{
-            apiService.fetchMovieSearch(query, movieStartPage) { result ->
+            apiService.fetchMovieSearch(URLEncoder.encode(query), movieStartPage) { result ->
                 loadMovie(result)
             }
         }
