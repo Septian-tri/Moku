@@ -186,6 +186,7 @@ class MovieListActivity : AppCompatActivity() {
                         cardView.setOnClickListener {
                             val singleMovieDetail = Intent(applicationContext, SingleMovieDetailActivity().javaClass)
                             singleMovieDetail.putExtra("singleMovie", singleMovie)
+                            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                             startActivity(singleMovieDetail)
                         }
 

@@ -1,5 +1,6 @@
 package com.septiantriwidian.moku.view
 
+import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +47,7 @@ class CustomActionBar (parentView : View, title : String?, backButton : Boolean,
             backButtonView.visibility= Button.GONE
         }else{
             backButtonView.setOnClickListener {
+                (parentView.rootView.context     as Activity).finish()
                 onBackPressedDispatcher.onBackPressed()
             }
         }

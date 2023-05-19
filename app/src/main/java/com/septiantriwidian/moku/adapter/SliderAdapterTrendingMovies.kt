@@ -1,5 +1,6 @@
 package com.septiantriwidian.moku.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
 import com.septiantriwidian.moku.R
@@ -17,15 +19,13 @@ import com.septiantriwidian.moku.dto.SingleMovieResponseDTO
 import com.septiantriwidian.moku.service.ApiService
 import com.smarteist.autoimageslider.SliderViewAdapter
 
-class SliderAdapterTrendingMovies (context: Context, moviesList : ArrayList<SingleMovieResponseDTO>) : SliderViewAdapter<SliderAdapterTrendingMovies.SliderViewHolder>() {
+class SliderAdapterTrendingMovies ( moviesList : ArrayList<SingleMovieResponseDTO>) : SliderViewAdapter<SliderAdapterTrendingMovies.SliderViewHolder>() {
 
     lateinit var apiService : ApiService
     var moviesList : ArrayList<SingleMovieResponseDTO>
-    var context : Context
 
     init {
         this.moviesList =  moviesList
-        this.context = context
     }
 
     override fun getCount(): Int {
@@ -33,54 +33,45 @@ class SliderAdapterTrendingMovies (context: Context, moviesList : ArrayList<Sing
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?): SliderViewHolder {
-        val inflate : View = LayoutInflater
-            .from(parent!!.context)
-            .inflate(R.layout.movie_single_cover_slider, null)
-
-        return SliderViewHolder(inflate)
+        return SliderViewHolder(
+                LayoutInflater
+                    .from(parent!!.context)
+                    .inflate(R.layout.movie_single_cover_slider, null)
+        )
     }
 
     override fun onBindViewHolder(viewHolder: SliderViewHolder, position : Int){
 
+        val rootView = viewHolder.itemView.rootView
+        val context = rootView.context
+        val intent = Intent(context, SingleMovieDetailActivity::class.java)
+        val movie : SingleMovieResponseDTO = moviesList[position]
+
         apiService = ApiService(context, "id")
-
-        val handler = Handler(Looper.getMainLooper())
-        val movie : SingleMovieResponseDTO = moviesList.get(position)
-        val movieName : String = movie.name ?: movie.title
-
-        viewHolder.movieTitle.text = movieName
-        viewHolder.movieAdditionalTxt.text = movie.media_type
-        viewHolder.movieRatingTxt.text = String.format("%.1f", movie.vote_average)
-        viewHolder.ratingBar.rating = movie.vote_average.toFloat()/2
-
         apiService.fetchImage(movie.poster_path){ resultImage ->
-            handler.post(object : Runnable {
-                override fun run() {
-                    viewHolder.movieImgeCover.setImageBitmap(resultImage)
-                    viewHolder.itemView.setOnClickListener(object : OnClickListener{
-                        override fun onClick(v: View?) {
-                            try{
+            (context as Activity).runOnUiThread {
 
-                                val tempMovieCOver = movie.imageCover //hold the temporary image cover for restoring cover image after changing to null before send to another activity
+                val animateBufferParent = viewHolder.bufferAnimate.parent
 
-                                movie.imageCover = null
-
-                                val intent = Intent(context, SingleMovieDetailActivity().javaClass)
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                                intent.putExtra("singleMovie", movie)
-                                context.startActivity(intent)
-
-                                movie.imageCover = tempMovieCOver //recovering image cover after sending movie object to another activity
-
-                            }catch (e : Exception){
-                                println(e.localizedMessage)
-                                e.printStackTrace()
-                            }
-
-                        }
-                    })
+                if(animateBufferParent != null){
+                    (animateBufferParent as ViewGroup).removeView(viewHolder.bufferAnimate)
                 }
-            })
+
+                viewHolder.movieImgeCover.setImageBitmap(resultImage)
+                viewHolder.movieTitle.text = movie.name ?: movie.title
+                viewHolder.movieAdditionalTxt.text = movie.media_type
+                viewHolder.movieRatingTxt.text = String.format("%.1f", movie.vote_average)
+                viewHolder.ratingBar.rating = movie.vote_average.toFloat()/2
+
+                viewHolder.movieImgeCover.setOnClickListener{
+                    movie.imageCover = null //reassign null image cover before sending to another activity
+                    intent.putExtra("singleMovie", movie)
+                    intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                    context.startActivity(intent)
+                    movie.imageCover = resultImage //recovering image cover after sending movie object to another activity
+                }
+
+            }
         }
 
     }
@@ -92,6 +83,7 @@ class SliderAdapterTrendingMovies (context: Context, moviesList : ArrayList<Sing
         var movieRatingTxt     : TextView
         var movieAdditionalTxt : TextView
         var ratingBar        : RatingBar
+        var bufferAnimate : ProgressBar
 
         init {
             movieImgeCover   = itemView.findViewById(R.id.movieImageCoverSlider)
@@ -99,6 +91,7 @@ class SliderAdapterTrendingMovies (context: Context, moviesList : ArrayList<Sing
             movieRatingTxt     = itemView.findViewById(R.id.movieRatingTextImageSlider)
             movieAdditionalTxt = itemView.findViewById(R.id.addtionalMovieTxtImageCoverSlider)
             ratingBar          = itemView.findViewById(R.id.ratingBar)
+            bufferAnimate = itemView.findViewById(R.id.bufferImageCoverSlider)
         }
 
     }

@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         apiService.fetchTrendingMovies{result ->
             handler.post(Runnable {
                 if(result.size > 0){
-                    sliderView.setSliderAdapter(SliderAdapterTrendingMovies(applicationContext, result))
+                    sliderView.setSliderAdapter(SliderAdapterTrendingMovies(result))
                     sliderView.slideToNextPosition()
                     sliderView.autoCycleDirection = SliderView.AUTO_CYCLE_DIRECTION_RIGHT
                     sliderView.startAutoCycle()
@@ -81,11 +81,11 @@ class MainActivity : AppCompatActivity() {
 
                     button.setOnClickListener {
                         val movieListByGenres = Intent(applicationContext, MovieListActivity::class.java)
-                            movieListByGenres.putExtra(IntentKey.GENRE_ID.name, genre.id)
-                            movieListByGenres.putExtra(IntentKey.GENRE_NAME.name, genreName)
-                            movieListByGenres.putExtra(IntentKey.MEDIA_MOVIE.name, MovieDetailMediaType.BY_ID_GENRE.name)
-                            movieListByGenres.putExtra(IntentKey.SEARCH_QUERY.name, "")
-                            startActivity(movieListByGenres)
+                        movieListByGenres.putExtra(IntentKey.GENRE_ID.name, genre.id)
+                        movieListByGenres.putExtra(IntentKey.GENRE_NAME.name, genreName)
+                        movieListByGenres.putExtra(IntentKey.MEDIA_MOVIE.name, MovieDetailMediaType.BY_ID_GENRE.name)
+                        movieListByGenres.putExtra(IntentKey.SEARCH_QUERY.name, "")
+                        startActivity(movieListByGenres)
                     }
 
                     button.text = genreName
@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity() {
                             inflater.setOnClickListener {
                                 val singleMovieDetail = Intent(applicationContext, SingleMovieDetailActivity::class.java)
                                 singleMovieDetail.putExtra("singleMovie", singleMovie)
+                                singleMovieDetail.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                                 startActivity(singleMovieDetail)
                             }
                         })
