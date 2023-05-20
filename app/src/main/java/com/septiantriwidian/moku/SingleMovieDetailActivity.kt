@@ -1,6 +1,7 @@
 package com.septiantriwidian.moku
 
 import android.content.Intent
+import android.graphics.Color
 import android.net.http.SslError
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -72,7 +73,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
 
         apiService = ApiService(applicationContext, "id")
         window.setFlags(fullScreenFlag, fullScreenFlag)
-        CustomActionBar(header, movieTitle, true, onBackPressedDispatcher).inflateHeader()
+        CustomActionBar(header, movieTitle, true).inflateHeader()
         StrictMode.setThreadPolicy(threadPolicy)
 
         movieRatingTxt.text   = String.format("%.1f/10", singleMovie.vote_average)
@@ -232,13 +233,16 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         val text1 = TextView(applicationContext)
         val text2 = TextView(applicationContext)
         val row  = TableRow(applicationContext)
+        val textColor = resources.getColor(R.color.white)
 
         text1.setPadding(0, 5, 10, 5)
         text1.textSize = 12f
         text1.text = titleText
+        text1.setTextColor(textColor)
 
         text2.textSize = 12f
         text2.text = valueText ?: "-"
+        text2.setTextColor(textColor)
 
         row.addView(text1)
         row.addView(text2)
@@ -326,6 +330,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).cancel()
         Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
         finish()
+        onDestroy()
     }
 
 }

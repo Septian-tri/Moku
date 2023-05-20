@@ -34,86 +34,91 @@ class MovieListActivity : AppCompatActivity() {
     private lateinit var apiService : ApiService
     private lateinit var scrollLayoutParent: ViewGroup
     private lateinit var bufferAnimate : ProgressBar
-    var cardViewLyParam : LayoutParams?
-    var calcCardViewMargin : Int
-    var cardViewHeight : Int
-    var cardViewWidth : Int
-    var viewCardPerLine : Int
-    var movieStartPage: Long
-    var totalMoviePage: Long
-    var loadNewPage : Boolean
+    private var cardViewLyParam : LayoutParams?
+    private var calcCardViewMargin : Int
+    private var cardViewHeight : Int
+    private var cardViewWidth : Int
+    private var viewCardTotalShowPerRow : Int
+    private var movieStartPage: Long
+    private var totalMoviePage: Long
+    private var loadNewPage : Boolean
+    private var screenWidth : Int
+    private var screenHeight : Int
+    private var genreId : Long
+    private var searchQuery : String
+    private var mediaMovie : String
+    private var rowsFinishRender : Long
 
     init{
         this.cardViewHeight = 0
         this.cardViewWidth = 0
         this.totalMoviePage = 0
-        this.viewCardPerLine = 0
+        this.viewCardTotalShowPerRow = 0
         this.calcCardViewMargin = 0
         this.movieStartPage = 1
         this.loadNewPage = false
         this.cardViewLyParam = null
+        this.screenWidth = 0
+        this.screenHeight = 0
+        this.genreId = 0
+        this.searchQuery = ""
+        this.mediaMovie = ""
+        this.rowsFinishRender = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_list)
 
+        val intent = intent.extras!!
+        apiService = ApiService(applicationContext, "id")
+        genreId = intent.getLong(IntentKey.GENRE_ID.name)
+        mediaMovie = intent.getString(IntentKey.MEDIA_MOVIE.name) as String
+        searchQuery = intent.getString(IntentKey.SEARCH_QUERY.name) as String
+
         val threadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         val fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN
-        val intent = intent.extras
-        val genreId = intent!!.getLong(IntentKey.GENRE_ID.name)
         val genreName = intent.getString(IntentKey.GENRE_NAME.name) as String
-        val mediaMovie : String = intent.getString(IntentKey.MEDIA_MOVIE.name) as String
-        val searchQuery : String = intent.getString(IntentKey.SEARCH_QUERY.name) as String
         val parentScroll : ScrollView = findViewById(R.id.parentScrollView)
         val getDisplayResolution = windowManager.defaultDisplay
         val displayResolutionPoint = Point()
-            getDisplayResolution.getSize(displayResolutionPoint)
-        val screenWidth = displayResolutionPoint.x
         val headerContainer : LinearLayout = findViewById(R.id.movieListHeader);
-        val viewTitle = if(mediaMovie == MovieDetailMediaType.BY_ID_GENRE.name)  genreName!!.uppercase() else searchQuery
+        val viewTitle = if(mediaMovie == MovieDetailMediaType.BY_ID_GENRE.name)  genreName.uppercase() else searchQuery
 
-        apiService = ApiService(applicationContext, "id")
-        window.setFlags(fullScreenFlag, fullScreenFlag)
-        CustomActionBar(headerContainer, viewTitle, true, onBackPressedDispatcher).inflateHeader()
+        getDisplayResolution.getSize(displayResolutionPoint)
+        CustomActionBar(headerContainer, viewTitle, true).inflateHeader()
         StrictMode.setThreadPolicy(threadPolicy)
+
+        this.screenWidth = displayResolutionPoint.x
+        this.screenHeight = displayResolutionPoint.y
+        window.setFlags(fullScreenFlag, fullScreenFlag)
 
         //setup the grid view card for list movies
         scrollLayoutParent   = findViewById(R.id.parentLayoutMovieList)
         cardViewHeight       = ViewCardMoviesSetting.MOVIE_CARDVIEW_HEIGHT
         cardViewWidth        = ViewCardMoviesSetting.MOVIE_CARDVIEW_WIDTH
-        viewCardPerLine      = ceil((screenWidth/cardViewWidth).toDouble()).toInt()
-        calcCardViewMargin   = ((screenWidth - (viewCardPerLine*cardViewWidth)) / viewCardPerLine) / 2
+        viewCardTotalShowPerRow      = ceil((screenWidth/cardViewWidth).toDouble()).toInt()
+        calcCardViewMargin   = ((screenWidth - (viewCardTotalShowPerRow*cardViewWidth)) / viewCardTotalShowPerRow) / 2
         cardViewLyParam      = LayoutParams(cardViewWidth, cardViewHeight)
         movieStartPage       = 1
-        totalMoviePage       = 0
-        loadNewPage          = false
+        totalMoviePage       = 1
+        loadNewPage          = true
         cardViewLyParam!!.setMargins(calcCardViewMargin)
 
         //giving  buffer progressbar animation for first time loaded page
         bufferAnimate = LayoutInflater.from(applicationContext).inflate(R.layout.buffer_progressbar_animate, null) as ProgressBar
-        scrollLayoutParent.addView(bufferAnimate)
+
 
         //do endless scroll and load the movies lists
         val handler = Handler(Looper.getMainLooper())
         parentScroll.viewTreeObserver.addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener{
             override fun onScrollChanged() {
-
-                fun checkNextPage() : Boolean{
-                    if(loadNewPage && totalMoviePage > 1 && movieStartPage <= totalMoviePage){
-                        loadNewPage = false
-                        movieStartPage++
-                        fetchMovie(genreId, searchQuery, mediaMovie)
-                        return true
-                    }
-                    return false
-                }
-
                 //next page automatically if progressbar animation rendered has parent
                 fun checkRepeatedLoadNextPage(){
                     handler.postDelayed(object : Runnable{
                         override fun run() {
-                            if(checkNextPage()){
+                            if(loadNewPage){
+                                fetchMovie()
                                 handler.removeCallbacks(this)
                             }else{
                                 checkRepeatedLoadNextPage()
@@ -123,42 +128,45 @@ class MovieListActivity : AppCompatActivity() {
                 }
 
                 if(parentScroll.scrollY >= (parentScroll.layoutParams.height-cardViewHeight)){
-                    checkNextPage()
+                    fetchMovie()
                     if(bufferAnimate.parent == null){
                         scrollLayoutParent.addView(bufferAnimate)
                         checkRepeatedLoadNextPage()
                     }
-
                 }
-
             }
 
         })
-        fetchMovie(genreId, searchQuery, mediaMovie)
+
+        fetchMovie()
+        recheckMovieRenderHeight()
     }
 
     private fun loadMovie(result : MoviesListResponseDTO) {
+
         this@MovieListActivity.runOnUiThread(Runnable {
             var totalImageLoad = 0
-            var totalCardRender = viewCardPerLine
-            val totalMovies     = result.results.size
-
+            var viewCardPerRowFinishRender = viewCardTotalShowPerRow //start finish render
+            val totalMovies = result.results.size
             var scrollLayoutHorizontal = LinearLayout(applicationContext)
+
+
             scrollLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
 
             //removing progressbar animation
             scrollLayoutParent.removeView(bufferAnimate)
 
+            //looping view card for make grid view
             for (i in 0..(totalMovies-1)) {
 
                 val singleMovie = result.results.get(i)
                 val movieName: String = singleMovie.name ?: singleMovie.title
                 val viewCardInflater = LayoutInflater.from(applicationContext).inflate(R.layout.movie_single_cardview, null)
                 val containerTextBottom : LinearLayout = viewCardInflater.findViewById(R.id.singleMovieRootBottomTextContainer)
-                val cardView : FrameLayout      = viewCardInflater.findViewById(R.id.SingleMovieCardView)
-                val titleMovie : TextView       = viewCardInflater.findViewById(R.id.singleMovieCardTitle)
-                val ratingMovie : TextView      = viewCardInflater.findViewById(R.id.singleMovieCardRatingText)
-                val coverMovie : ImageView      = viewCardInflater.findViewById(R.id.singleMovieCardCover)
+                val cardView : FrameLayout = viewCardInflater.findViewById(R.id.SingleMovieCardView)
+                val titleMovie : TextView = viewCardInflater.findViewById(R.id.singleMovieCardTitle)
+                val ratingMovie : TextView = viewCardInflater.findViewById(R.id.singleMovieCardRatingText)
+                val coverMovie : ImageView = viewCardInflater.findViewById(R.id.singleMovieCardCover)
 
                 viewCardInflater.layoutParams = cardViewLyParam
                 titleMovie.text = movieName
@@ -167,11 +175,11 @@ class MovieListActivity : AppCompatActivity() {
                 containerTextBottom.visibility = LinearLayout.GONE
 
                 scrollLayoutHorizontal.addView(viewCardInflater)
-
-                if (i > totalCardRender){
-                    scrollLayoutParent!!.addView(scrollLayoutHorizontal)
+                if (i > viewCardPerRowFinishRender){
+                    rowsFinishRender++
+                    scrollLayoutParent.addView(scrollLayoutHorizontal)
                     scrollLayoutHorizontal = LinearLayout(applicationContext) //resetting scroll layout horizontal
-                    totalCardRender += viewCardPerLine
+                    viewCardPerRowFinishRender += viewCardTotalShowPerRow
                 }
 
                 apiService.fetchImage(if(singleMovie.poster_path == null) "none" else singleMovie.poster_path) { result ->
@@ -201,18 +209,58 @@ class MovieListActivity : AppCompatActivity() {
             }
 
             totalMoviePage = result.total_pages
+
         })
+
     }
 
-    private fun fetchMovie(genreId : Long, query:String, mediaMovie : String){
-        if(mediaMovie == MovieDetailMediaType.BY_ID_GENRE.name){
-            apiService.fetchMoviesListByGenre(genreId, movieStartPage) { result ->
-                loadMovie(result)
+    private fun fetchMovie(){
+
+        if(loadNewPage && movieStartPage <= totalMoviePage){
+
+            if(bufferAnimate.parent == null) {
+                scrollLayoutParent.addView(bufferAnimate)
             }
-        }else{
-            apiService.fetchMovieSearch(URLEncoder.encode(query), movieStartPage) { result ->
-                loadMovie(result)
+
+            loadNewPage = false
+            movieStartPage++
+
+            if(mediaMovie == MovieDetailMediaType.BY_ID_GENRE.name){
+                apiService.fetchMoviesListByGenre(genreId, movieStartPage) { result ->
+                    loadMovie(result)
+                }
+            }else{
+                apiService.fetchMovieSearch(URLEncoder.encode(searchQuery), movieStartPage) { result ->
+                    loadMovie(result)
+                }
             }
+            println("load new page")
         }
+    }
+
+    private fun recheckMovieRenderHeight(){
+
+        //recheck the results render of view card if all stack view card
+        //cannot overflow the screen height do load movie method again
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                val calcViewCardHasRender = (rowsFinishRender * cardViewHeight) + (rowsFinishRender * (calcCardViewMargin*2))
+                if(loadNewPage){
+                    if(calcViewCardHasRender < screenHeight) {
+                        fetchMovie()
+                    }else{
+                        return handler.removeCallbacks(this)
+                    }
+                }
+                return recheckMovieRenderHeight()
+            }
+        }, 2000)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        onDestroy()
     }
 }

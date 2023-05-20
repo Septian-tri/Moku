@@ -1,13 +1,9 @@
 package com.septiantriwidian.moku.adapter
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -19,13 +15,15 @@ import com.septiantriwidian.moku.dto.SingleMovieResponseDTO
 import com.septiantriwidian.moku.service.ApiService
 import com.smarteist.autoimageslider.SliderViewAdapter
 
-class SliderAdapterTrendingMovies ( moviesList : ArrayList<SingleMovieResponseDTO>) : SliderViewAdapter<SliderAdapterTrendingMovies.SliderViewHolder>() {
+class SliderAdapterTrendingMovies (moviesList : ArrayList<SingleMovieResponseDTO>, activity: Activity) : SliderViewAdapter<SliderAdapterTrendingMovies.SliderViewHolder>() {
 
-    lateinit var apiService : ApiService
-    var moviesList : ArrayList<SingleMovieResponseDTO>
+    private lateinit var apiService : ApiService
+    private var moviesList : ArrayList<SingleMovieResponseDTO>
+    private var activity : Activity
 
     init {
         this.moviesList =  moviesList
+        this.activity = activity
     }
 
     override fun getCount(): Int {
@@ -42,14 +40,14 @@ class SliderAdapterTrendingMovies ( moviesList : ArrayList<SingleMovieResponseDT
 
     override fun onBindViewHolder(viewHolder: SliderViewHolder, position : Int){
 
-        val rootView = viewHolder.itemView.rootView
+        val rootView = viewHolder.movieImgeCover.rootView
         val context = rootView.context
         val intent = Intent(context, SingleMovieDetailActivity::class.java)
         val movie : SingleMovieResponseDTO = moviesList[position]
 
         apiService = ApiService(context, "id")
         apiService.fetchImage(movie.poster_path){ resultImage ->
-            (context as Activity).runOnUiThread {
+            activity.runOnUiThread {
 
                 val animateBufferParent = viewHolder.bufferAnimate.parent
 
