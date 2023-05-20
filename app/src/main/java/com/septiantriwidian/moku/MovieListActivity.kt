@@ -80,6 +80,7 @@ class MovieListActivity : AppCompatActivity() {
         val fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN
         val genreName = intent.getString(IntentKey.GENRE_NAME.name) as String
         val parentScroll : ScrollView = findViewById(R.id.parentScrollView)
+        val layoutScroll : LinearLayout = findViewById(R.id.parentLayoutMovieList)
         val getDisplayResolution = windowManager.defaultDisplay
         val displayResolutionPoint = Point()
         val headerContainer : LinearLayout = findViewById(R.id.movieListHeader);
@@ -108,31 +109,14 @@ class MovieListActivity : AppCompatActivity() {
         //giving  buffer progressbar animation for first time loaded page
         bufferAnimate = LayoutInflater.from(applicationContext).inflate(R.layout.buffer_progressbar_animate, null) as ProgressBar
 
-
         //do endless scroll and load the movies lists
-        val handler = Handler(Looper.getMainLooper())
         parentScroll.viewTreeObserver.addOnScrollChangedListener(object : ViewTreeObserver.OnScrollChangedListener{
-            override fun onScrollChanged() {
-                //next page automatically if progressbar animation rendered has parent
-                fun checkRepeatedLoadNextPage(){
-                    handler.postDelayed(object : Runnable{
-                        override fun run() {
-                            if(loadNewPage){
-                                fetchMovie()
-                                handler.removeCallbacks(this)
-                            }else{
-                                checkRepeatedLoadNextPage()
-                            }
-                        }
-                    }, 1000)
-                }
 
-                if(parentScroll.scrollY >= (parentScroll.layoutParams.height-cardViewHeight)){
+            override fun onScrollChanged() {
+                val calcMaxScroll = (layoutScroll.height-parentScroll.height)-cardViewHeight
+                if(parentScroll.scrollY >= calcMaxScroll){
                     fetchMovie()
-                    if(bufferAnimate.parent == null){
-                        scrollLayoutParent.addView(bufferAnimate)
-                        checkRepeatedLoadNextPage()
-                    }
+                    automaticLoadMovie()
                 }
             }
 
@@ -216,12 +200,9 @@ class MovieListActivity : AppCompatActivity() {
 
     private fun fetchMovie(){
 
+        bufferAnimate()
+
         if(loadNewPage && movieStartPage <= totalMoviePage){
-
-            if(bufferAnimate.parent == null) {
-                scrollLayoutParent.addView(bufferAnimate)
-            }
-
             loadNewPage = false
             movieStartPage++
 
@@ -234,7 +215,6 @@ class MovieListActivity : AppCompatActivity() {
                     loadMovie(result)
                 }
             }
-            println("load new page")
         }
     }
 
@@ -242,7 +222,6 @@ class MovieListActivity : AppCompatActivity() {
 
         //recheck the results render of view card if all stack view card
         //cannot overflow the screen height do load movie method again
-
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
@@ -259,8 +238,28 @@ class MovieListActivity : AppCompatActivity() {
         }, 2000)
     }
 
+    private fun automaticLoadMovie(){
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(object : Runnable{
+            override fun run() {
+                if(loadNewPage && bufferAnimate.parent != null){
+                    fetchMovie()
+                    return handler.removeCallbacks(this)
+                }
+                return automaticLoadMovie()
+            }
+
+        }, 1000)
+    }
+
+    private fun bufferAnimate(){
+        if(bufferAnimate.parent == null) {
+            scrollLayoutParent.addView(bufferAnimate)
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
-        onDestroy()
+        finishAndRemoveTask()
     }
 }
