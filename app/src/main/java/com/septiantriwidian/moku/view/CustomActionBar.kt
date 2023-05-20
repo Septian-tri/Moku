@@ -46,21 +46,16 @@ class CustomActionBar (parentView : View, title : String?, backButton : Boolean)
         }else{
             backButtonView.setOnClickListener {
                 val activityS = parentView.context as Activity
-                val webView = parentView.findViewById<WebView>(R.id.movieTrailer)
+                val webView = parentView.rootView.findViewById<WebView>(R.id.movieTrailer)
 
-                if(webView !== null && webView.isActivated){
+                if(webView !== null){
                     webView.clearHistory()
                     webView.clearCache(true)
                     webView.destroy()
                 }
 
                 activityS.setResult(RESULT_CANCELED)
-//                activityS.startActivity(activityS.intent)
                 activityS.finishAndRemoveTask()
-//                (parentView.context as Activity).onBackPressed()
-//                activity.finishAndRemoveTask()
-//                activity.finish()
-//                activity.parent.onBackPressed()
             }
         }
 
