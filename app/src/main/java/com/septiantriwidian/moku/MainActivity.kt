@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         apiService = ApiService(applicationContext, "id")
         window.setFlags(fullScreenFlag, fullScreenFlag)
 
-        CustomActionBar(headerView, null, false, onBackPressedDispatcher).inflateHeader()
+        CustomActionBar(headerView, null, false).inflateHeader()
         StrictMode.setThreadPolicy(threadPolicy)
         singleMovieCardParams.bottomMargin = ViewCardMoviesSetting.MOVIE_CARDVIEW_MARGIN
 
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         apiService.fetchTrendingMovies{result ->
             handler.post(Runnable {
                 if(result.size > 0){
-                    sliderView.setSliderAdapter(SliderAdapterTrendingMovies(result))
+                    sliderView.setSliderAdapter(SliderAdapterTrendingMovies(result, this))
                     sliderView.slideToNextPosition()
                     sliderView.autoCycleDirection = SliderView.AUTO_CYCLE_DIRECTION_RIGHT
                     sliderView.startAutoCycle()

@@ -17,18 +17,15 @@ import com.septiantriwidian.moku.R
 import com.septiantriwidian.moku.utils.constant.IntentKey
 import com.septiantriwidian.moku.utils.constant.MovieDetailMediaType
 
-class CustomActionBar (parentView : View, title : String?, backButton : Boolean, onBackPressedDispatcher: OnBackPressedDispatcher) : AppCompatActivity(){
+class CustomActionBar (parentView : View, title : String?, backButton : Boolean) : AppCompatActivity(){
 
     private var parentView : ViewGroup
     private var title : String?
     private var backButton : Boolean
-    private var onBackPressedDispatcher : OnBackPressedDispatcher
-
     init {
         this.parentView = parentView as ViewGroup
         this.title = title
         this.backButton = backButton
-        this.onBackPressedDispatcher = onBackPressedDispatcher
     }
 
     fun inflateHeader(){
@@ -48,8 +45,8 @@ class CustomActionBar (parentView : View, title : String?, backButton : Boolean,
             backButtonView.visibility= Button.GONE
         }else{
             backButtonView.setOnClickListener {
-                val activity = parentView.rootView.context as Activity
-                val webView = activity.findViewById<WebView>(R.id.movieTrailer)
+                val activityS = parentView.context as Activity
+                val webView = parentView.findViewById<WebView>(R.id.movieTrailer)
 
                 if(webView !== null && webView.isActivated){
                     webView.clearHistory()
@@ -57,9 +54,13 @@ class CustomActionBar (parentView : View, title : String?, backButton : Boolean,
                     webView.destroy()
                 }
 
-                activity.finishAndRemoveTask()
-                activity.finish()
-                activity.onBackPressed()
+                activityS.setResult(RESULT_CANCELED)
+//                activityS.startActivity(activityS.intent)
+                activityS.finishAndRemoveTask()
+//                (parentView.context as Activity).onBackPressed()
+//                activity.finishAndRemoveTask()
+//                activity.finish()
+//                activity.parent.onBackPressed()
             }
         }
 
