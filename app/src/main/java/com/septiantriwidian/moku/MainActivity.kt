@@ -8,27 +8,24 @@ import android.os.StrictMode
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.WindowManager.LayoutParams
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
+import com.septiantriwidian.moku.view.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.setMargins
 import com.septiantriwidian.moku.dto.SingleMovieGenreResponseDTO
 import com.septiantriwidian.moku.adapter.SliderAdapterTrendingMovies
+import com.septiantriwidian.moku.dto.MovieCardUtilsDTO
 import com.septiantriwidian.moku.service.ApiService
-import com.septiantriwidian.moku.view.CustomActionBar
 import com.septiantriwidian.moku.utils.constant.IntentKey
 import com.septiantriwidian.moku.utils.constant.MovieDetailMediaType
 import com.septiantriwidian.moku.utils.constant.MoviesTrendingMedia
-import com.septiantriwidian.moku.utils.constant.ViewCardMoviesSetting
+import com.septiantriwidian.moku.utils.helper.MovieCardUtils
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.coroutines.Runnable
 
 class MainActivity : AppCompatActivity() {
-
-    lateinit var apiService : ApiService
-    lateinit var sliderView : SliderView
+    private lateinit var apiService : ApiService
+    private lateinit var sliderView : SliderView
     lateinit var genresListButtonContainer : LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,16 +34,12 @@ class MainActivity : AppCompatActivity() {
 
         val fullScreenFlag = LayoutParams.FLAG_FULLSCREEN
         val threadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        val singleMovieCardParams = FrameLayout.LayoutParams(ViewCardMoviesSetting.MOVIE_CARDVIEW_WIDTH, ViewCardMoviesSetting.MOVIE_CARDVIEW_HEIGHT)
         val handler = Handler(Looper.getMainLooper())
-        val headerView : LinearLayout =  findViewById(R.id.mainActivityHeader)
 
         apiService = ApiService(applicationContext, "id")
         window.setFlags(fullScreenFlag, fullScreenFlag)
 
-        CustomActionBar(headerView, null, false).inflateHeader()
         StrictMode.setThreadPolicy(threadPolicy)
-        singleMovieCardParams.bottomMargin = ViewCardMoviesSetting.MOVIE_CARDVIEW_MARGIN
 
         //fetch whole trending movies for image slider
         sliderView = findViewById(R.id.moviesSliderCover)
@@ -105,35 +98,38 @@ class MainActivity : AppCompatActivity() {
         //fetch trending movies by media
         fetchTrendingMoviesByMedia(MoviesTrendingMedia.movie, R.id.trendingMoviesContainer)
         fetchTrendingMoviesByMedia(MoviesTrendingMedia.tv, R.id.trendingTvSeriesContainer)
-
+        ActionBar(this, null, false, null)
     }
 
     private fun fetchTrendingMoviesByMedia(trendingMedia: MoviesTrendingMedia, trendingMoviesContainer : Int){
         apiService.trendingMedia = trendingMedia
+        val movieCardUtils : MovieCardUtilsDTO = MovieCardUtils(this).details()
+        val layoutParams = LinearLayout.LayoutParams(movieCardUtils.getCardWidth(), movieCardUtils.getCardHeight())
+            layoutParams.setMargins(movieCardUtils.getCardMargin())
+
         apiService.fetchTrendingMovies { results ->
             this@MainActivity.runOnUiThread(Runnable {
                 val rootContainerTrendingMovie : LinearLayout = findViewById(trendingMoviesContainer)
 
                 for(i in 0 .. (results.size-1)){
-
                     val singleMovie = results.get(i)
-                    val layoutParams = LinearLayout.LayoutParams(ViewCardMoviesSetting.MOVIE_CARDVIEW_WIDTH, ViewCardMoviesSetting.MOVIE_CARDVIEW_HEIGHT)
                     val inflater = LayoutInflater.from(applicationContext).inflate(R.layout.movie_single_cardview, null)
                     val movieTitle : TextView = inflater.findViewById(R.id.singleMovieCardTitle)
-                    val singleMovieCard : FrameLayout = inflater.findViewById(R.id.SingleMovieCardView)
                     val coverImage : ImageView = inflater.findViewById(R.id.singleMovieCardCover)
                     val rating : TextView = inflater.findViewById(R.id.singleMovieCardRatingText)
-                    val releaseStatus : TextView = inflater.findViewById(R.id.singleMovieCardReleaseStatus)
 
-                    layoutParams.setMargins(ViewCardMoviesSetting.MOVIE_CARDVIEW_MARGIN, 0, ViewCardMoviesSetting.MOVIE_CARDVIEW_MARGIN, 0)
                     inflater.layoutParams = layoutParams
 
                     apiService.fetchImage(singleMovie.poster_path){ imageResult ->
                         this@MainActivity.runOnUiThread(Runnable {
+                            val progressBar : ProgressBar = inflater.findViewById(R.id.singleMovieCardProgressBar)
+                            var parentCard : FrameLayout = inflater.findViewById(R.id.singleMovieCardParentView)
+
                             rating.text = String.format("%.1f/10", singleMovie.vote_average)
                             movieTitle.text = singleMovie.original_title?:singleMovie.title?:singleMovie.name
                             coverImage.setImageBitmap(imageResult)
-                            singleMovieCard.removeView(inflater.findViewById(R.id.singleMovieCardProgressBar))
+
+                            parentCard.removeView(progressBar)
 
                             inflater.setOnClickListener {
                                 val singleMovieDetail = Intent(applicationContext, SingleMovieDetailActivity::class.java)

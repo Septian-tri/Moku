@@ -5,75 +5,61 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_gravity="top|center"
     android:background="@color/deeper_blue"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:padding="8dp"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <FrameLayout
-        android:background="@drawable/search_background"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <EditText
-            android:background="@null"
-            android:id="@+id/searchField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center"
-            android:hint="Cari Film / Serial Televisi"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:paddingEnd="40dp"
-            android:paddingStart="5dp"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-            android:textColorHint="@color/white_transparent"
-            android:textSize="13sp">
-
-        </EditText>
-
-        <Button
-            android:layout_margin="5dp"
-            android:background="@drawable/baseline_search_24"
-            android:id="@+id/actionBarSearchButton"
-            android:layout_width="30dip"
-            android:layout_height="30dip"
-            android:layout_gravity="end|center"/>
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:background="@drawable/baseline_arrow_back_24"
-            android:id="@+id/backOptions"
-            android:layout_width="30dip"
-            android:layout_height="30dip"
-            android:layout_gravity="start|center"/>
-
-        <TextView
+    <TextView
             android:id="@+id/actionBarTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:paddingStart="35dp"
-            android:paddingEnd="10dp"
             android:textAlignment="center"
+            android:padding="12dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Display4"
             android:textSize="18sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
-    </FrameLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:background="@drawable/search_background"
+        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+            <Button
+                    android:visibility="gone"
+                    android:background="@drawable/baseline_arrow_back_24"
+                    android:id="@+id/backButton"
+                    android:layout_width="30dip"
+                    android:layout_height="30dip"
+                    android:layout_gravity="start|center"/>
 
+            <EditText
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:id="@+id/searchField"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:hint="Cari Film / Serial Televisi"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+                    android:textColorHint="@color/white_transparent"
+                    android:textSize="13sp">
+
+            </EditText>
+
+            <Button
+                android:background="@drawable/baseline_search_24"
+                android:id="@+id/actionBarSearchButton"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_gravity="end|center"/>
+    </LinearLayout>
 </LinearLayout>

@@ -32,14 +32,11 @@ class SliderAdapterTrendingMovies (moviesList : ArrayList<SingleMovieResponseDTO
 
     override fun onCreateViewHolder(parent: ViewGroup?): SliderViewHolder {
         return SliderViewHolder(
-                LayoutInflater
-                    .from(parent!!.context)
-                    .inflate(R.layout.movie_single_cover_slider, null)
+            LayoutInflater.from(parent!!.context).inflate(R.layout.movie_single_cover_slider, null)
         )
     }
 
     override fun onBindViewHolder(viewHolder: SliderViewHolder, position : Int){
-
         val rootView = viewHolder.movieImgeCover.rootView
         val context = rootView.context
         val intent = Intent(context, SingleMovieDetailActivity::class.java)
@@ -75,7 +72,6 @@ class SliderAdapterTrendingMovies (moviesList : ArrayList<SingleMovieResponseDTO
     }
 
     class SliderViewHolder(itemView: View) : ViewHolder(itemView){
-
         var movieImgeCover   : ImageView
         var movieTitle       : TextView
         var movieRatingTxt     : TextView
@@ -91,7 +87,6 @@ class SliderAdapterTrendingMovies (moviesList : ArrayList<SingleMovieResponseDTO
             ratingBar          = itemView.findViewById(R.id.ratingBar)
             bufferAnimate = itemView.findViewById(R.id.bufferImageCoverSlider)
         }
-
     }
 
 }

@@ -8,39 +8,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:id="@+id/mainActivityHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <include layout="@layout/custom_action_bar"/>
 
     <ScrollView
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
             <com.smarteist.autoimageslider.SliderView
-                app:sliderScrollTimeInSec="5"
-                app:sliderAutoCycleEnabled="true"
-                app:sliderAnimationDuration="@integer/material_motion_duration_long_1"
-                app:sliderIndicatorEnabled="true"
-                app:sliderIndicatorOrientation="horizontal"
-                app:sliderIndicatorPadding="5px"
-                app:sliderStartAutoCycle="true"
-                app:sliderIndicatorAnimationDuration="@integer/material_motion_duration_medium_2"
-                app:sliderIndicatorRadius="3px"
-                app:sliderIndicatorSelectedColor="@color/white"
-                app:sliderIndicatorUnselectedColor="@color/light_blue"
-                app:sliderAutoCycleDirection="right"
-                android:id="@+id/moviesSliderCover"
-                android:layout_width="match_parent"
-                android:layout_gravity="top"
-                android:layout_height="320dp"/>
+                    app:sliderScrollTimeInSec="5"
+                    app:sliderAutoCycleEnabled="true"
+                    app:sliderAnimationDuration="@integer/material_motion_duration_long_1"
+                    app:sliderIndicatorEnabled="true"
+                    app:sliderIndicatorOrientation="horizontal"
+                    app:sliderIndicatorPadding="5px"
+                    app:sliderStartAutoCycle="true"
+                    app:sliderIndicatorAnimationDuration="@integer/material_motion_duration_medium_2"
+                    app:sliderIndicatorRadius="3px"
+                    app:sliderIndicatorSelectedColor="@color/white"
+                    app:sliderIndicatorUnselectedColor="@color/light_blue"
+                    app:sliderAutoCycleDirection="right"
+                    android:id="@+id/moviesSliderCover"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="top"
+                    android:layout_height="320dp"/>
 
             <HorizontalScrollView
                     android:layout_gravity="top"
@@ -144,16 +139,14 @@
                             android:id="@+id/trendingTvSeriesContainer"
                             android:orientation="horizontal"
                             android:layout_height="wrap_content"
-                            android:layout_width="match_parent">
+                            android:layout_width="wrap_content">
 
                     </LinearLayout>
 
                 </HorizontalScrollView>
 
             </LinearLayout>
-
         </LinearLayout>
-
     </ScrollView>
 
 </LinearLayout>

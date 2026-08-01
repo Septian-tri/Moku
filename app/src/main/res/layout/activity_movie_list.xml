@@ -6,16 +6,11 @@
         tools:context=".MovieListActivity"
         xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:id="@+id/movieListHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <include layout="@layout/custom_action_bar"/>
 
         <ScrollView
-            android:scrollbars="vertical"
             android:id="@+id/parentScrollView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
                 <LinearLayout
@@ -28,4 +23,30 @@
 
         </ScrollView>
 
+        <FrameLayout
+                android:visibility="gone"
+                android:id="@+id/notFoundState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_gravity="center|center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                                android:layout_gravity="center"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:src="@drawable/ic_baseline_sentiment_very_dissatisfied_24"/>
+
+                        <TextView
+                                android:padding="8dp"
+                                android:textSize="16sp"
+                                android:text="Film Belum Tersedia"
+                                android:color="@color/white"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"/>
+                </LinearLayout>
+        </FrameLayout>
 </LinearLayout>

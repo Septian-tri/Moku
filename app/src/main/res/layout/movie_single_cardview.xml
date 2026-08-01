@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+        android:orientation="vertical"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:background="@drawable/shape_view_card_movies_by_genres"
-        android:id="@+id/SingleMovieCardView"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/singleMovieCardParentView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/singleMovieCardCover"
-            android:scaleType="centerCrop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+                android:id="@+id/singleMovieCardCover"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
         <TextView
-            android:id="@+id/singleMovieCardTitle"
-            android:gravity="top|center_horizontal"
-            android:textSize="11sp"
-            android:background="@color/transparent_deep_blue"
-            android:padding="3dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+                android:id="@+id/singleMovieCardTitle"
+                android:gravity="top|center_horizontal"
+                android:textSize="11sp"
+                android:background="@color/transparent_deep_blue"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         <ProgressBar
             android:id="@+id/singleMovieCardProgressBar"
@@ -29,8 +33,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp"/>
 
-        <LinearLayout
-                android:gravity="bottom"
+        <FrameLayout
+                android:gravity="center"
                 android:layout_gravity="bottom"
                 android:orientation="horizontal"
                 android:id="@+id/singleMovieRootBottomTextContainer"
@@ -41,20 +45,20 @@
             <TextView
                 android:textColor="@color/white"
                 android:id="@+id/singleMovieCardRatingText"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center"
                 android:padding="3dp"
                 android:textSize="11sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/singleMovieCardReleaseStatus"
-                android:layout_gravity="end"
+                android:id="@+id/adultState"
+                android:layout_gravity="end|center"
                 android:padding="3dp"
+                android:textColor="@color/white"
                 android:textSize="11sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-        </LinearLayout>
-
-    </FrameLayout>
+        </FrameLayout>
+</FrameLayout>

@@ -1,7 +1,13 @@
 package com.septiantriwidian.moku.service
 import com.septiantriwidian.moku.utils.constant.ApiUrl
 import okhttp3.*
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 class NetworkService {
 
@@ -10,8 +16,26 @@ class NetworkService {
     var userAgent : String
 
     init {
+        val trustAllCerts = arrayOf<TrustManager>(
+            object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
+                }
+
+                override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+                }
+
+                override fun getAcceptedIssuers(): Array<X509Certificate> {
+                    return arrayOf()
+                }
+            }
+        )
+        val sslContext: SSLContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, SecureRandom())
+        val sslSocketFactory: SSLSocketFactory = sslContext.socketFactory;
+
         okHttpClient = OkHttpClient()
             .newBuilder()
+            .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
             .connectionSpecs(tlsConnection())
             .callTimeout(120, TimeUnit.SECONDS)
             .writeTimeout(120, TimeUnit.SECONDS)
@@ -19,7 +43,7 @@ class NetworkService {
             .connectTimeout(120, TimeUnit.SECONDS)
             .build()
         this.headerHost = ApiUrl.MOVIE_HOST
-        this.userAgent  = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:109.0) Gecko/20100101 Firefox/110.0"
+        this.userAgent  = "Android (Linux; U; Android 33; fr; OPPO/CPH2197/mobile) com.backelite.vingtminutes/5.0.9.1"
     }
 
     private fun tlsConnection() : ArrayList<ConnectionSpec> {

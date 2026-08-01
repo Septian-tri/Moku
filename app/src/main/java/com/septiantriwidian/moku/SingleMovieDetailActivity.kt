@@ -1,37 +1,35 @@
 package com.septiantriwidian.moku
 
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.Point
 import android.net.http.SslError
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
 import android.text.Html
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.util.Log
+import android.view.*
 import android.webkit.*
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RatingBar
-import android.widget.ScrollView
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.septiantriwidian.moku.dto.SingleMovieGenreResponseDTO
 import com.septiantriwidian.moku.dto.SingleMovieResponseDTO
 import com.septiantriwidian.moku.dto.SingleMovieReviewDetailResponsesDTO
 import com.septiantriwidian.moku.service.ApiService
 import com.septiantriwidian.moku.service.NetworkService
-import com.septiantriwidian.moku.view.CustomActionBar
 import com.septiantriwidian.moku.utils.constant.ApiUrl
+import com.septiantriwidian.moku.utils.constant.IntentKey
+import com.septiantriwidian.moku.utils.constant.MovieDetailMediaType
+import com.septiantriwidian.moku.view.ActionBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.cancel
+import java.util.*
+import kotlin.math.floor
+
 
 class SingleMovieDetailActivity : AppCompatActivity() {
 
@@ -69,11 +67,22 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         val viewerTarget : TextView = findViewById(R.id.viewerTarget)
         val movieOverview : TextView = findViewById(R.id.movieOverview)
         val movieMedia : TextView = findViewById(R.id.movieMedia)
-        val header : LinearLayout = findViewById(R.id.movieDetailHeader)
+        val wrapperParentPreview : LinearLayout = findViewById(R.id.wrapper_parent_preview)
+        val wrapperParentParams = wrapperParentPreview.layoutParams;
+        val display: Display = windowManager.defaultDisplay
+        var webViewLayoutParams : ViewGroup.LayoutParams? = null
+
+        webViewTrailer = findViewById(R.id.movieTrailer)
+        webViewLayoutParams = webViewTrailer.layoutParams
+        webViewLayoutParams.height = display.height/3
+        webViewLayoutParams.width = display.width
+        webViewTrailer.layoutParams = webViewLayoutParams
+
+        wrapperParentParams.height = display.height/3
+        wrapperParentPreview.layoutParams = wrapperParentParams
 
         apiService = ApiService(applicationContext, "id")
         window.setFlags(fullScreenFlag, fullScreenFlag)
-        CustomActionBar(header, movieTitle, true).inflateHeader()
         StrictMode.setThreadPolicy(threadPolicy)
 
         movieRatingTxt.text   = String.format("%.1f/10", singleMovie.vote_average)
@@ -81,9 +90,9 @@ class SingleMovieDetailActivity : AppCompatActivity() {
         movieTitleDetail.text = movieTitle
         viewerTarget.text     = if(singleMovie.adult) "+18" else "SU|BO"
         movieOverview.text    = singleMovie.overview
-        movieMedia.text       = if (singleMovie.media_type == "tv") "Serial Televisi" else "Layar Lebar"
+        movieMedia.text       = if ("tv".equals(singleMovie.media_type)) "Serial Televisi" else "Layar Lebar"
 
-        //fetch more detail movie
+        //fetch more detail movi
         apiService.fetchMovieDetail(singleMovie.id){ result ->
             this@SingleMovieDetailActivity.runOnUiThread(Runnable {
                 val movieDurationTV : TextView = findViewById(R.id.movieDuration)
@@ -91,20 +100,19 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                 val movieDetailTable : TableLayout = findViewById(R.id.tableMovieDetail)
                 val movieTagGenresContainer : LinearLayout = findViewById(R.id.genresTagMovieDetail)
                 val movieTagGenres = result.genres
-                val durationHours  = Math.floor((result.runtime/60).toDouble()).toInt()
+                val durationHours  = floor((result.runtime/60).toDouble()).toInt()
                 val durationMinute = result.runtime-(durationHours*60)
-                val durationSecond = Math.floor((durationMinute/60).toDouble()).toInt()*60
+                val durationSecond = floor((durationMinute/60).toDouble()).toInt()*60
                 val durationMinutePrefix = if(durationMinute <= 9) "0$durationMinute" else durationMinute
                 val durationHourPrefix   = if(durationHours <= 9) "0$durationHours" else durationHours
                 val durationSecondPrefix = if(durationSecond <= 9) "0$durationSecond" else durationSecond
                 val finalDuration = "$durationHourPrefix:$durationMinutePrefix:$durationSecondPrefix"
-                val movieTagLine = if (result.tagline.equals("")) "Tidak Ada Tagline" else result.tagline
+                val movieTagLine = if ("".equals(result.tagline)) "Tidak Ada Tagline" else result.tagline
 
                 movieDurationTV.text = finalDuration
                 movieTagLineTV.text = movieTagLine
 
                 for(tagGenre : SingleMovieGenreResponseDTO in movieTagGenres){
-
                     val buttonGenresInflater = LayoutInflater.from(applicationContext).inflate(R.layout.movie_genres_button_template, null)
                     val genreTagButton : TextView = buttonGenresInflater.findViewById(R.id.buttonGenres)
 
@@ -112,12 +120,15 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                     movieTagGenresContainer.addView(buttonGenresInflater)
 
                     genreTagButton.setOnClickListener {
+                        this.clearCurrentTask()
                         val intent = Intent(applicationContext, MovieListActivity::class.java)
-                            .putExtra("genreName", tagGenre.name)
-                            .putExtra("genreId", tagGenre.id)
+
+                        intent.putExtra(IntentKey.GENRE_ID.name, tagGenre.id)
+                        intent.putExtra(IntentKey.GENRE_NAME.name, tagGenre.name)
+                        intent.putExtra(IntentKey.MEDIA_MOVIE.name, MovieDetailMediaType.BY_ID_GENRE.name)
+                        intent.putExtra(IntentKey.SEARCH_QUERY.name, "")
                         startActivity(intent)
                     }
-
                 }
 
                 movieDetailTable.addView(rowTable("Judul ", movieTitle))
@@ -142,7 +153,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
 
         //fetch image for backdrop background
         val scrollView : ImageView = findViewById(R.id.movieDetailBackgroundImage)
-        if(singleMovie.backdrop_path !== null){
+        if(!Objects.isNull(singleMovie.backdrop_path)){
             apiService.fetchImage(singleMovie.backdrop_path){ imageResult ->
                 this@SingleMovieDetailActivity.runOnUiThread(Runnable { scrollView.setImageBitmap(imageResult) })
             }
@@ -150,12 +161,10 @@ class SingleMovieDetailActivity : AppCompatActivity() {
 
         //fetch movie trailer
         apiService.fetchMovieTrailer(singleMovie.id) { result ->
-
             var trailerKeyId = ""
             var siteSourceTrailer = ""
 
             for (i in 0 .. (result.results.size-1)){
-
                 val singleResultTrailer = result.results.get(i)
 
                 if(singleResultTrailer.type.equals("Trailer")){
@@ -169,26 +178,23 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                     siteSourceTrailer = singleResultTrailer.site
                     break
                 }
-
             }
 
-            if(siteSourceTrailer.equals("YouTube")) {
+            if("YouTube".equals(siteSourceTrailer)) {
                 this@SingleMovieDetailActivity.runOnUiThread(Runnable {
-                    val trailerUri = String.format(ApiUrl.YOUTUBE_MOVIE_TRAILER_URI, trailerKeyId)
-                    var hardwareAccelerateFlag = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
-
+                    val trailerUri = String.format(ApiUrl.YOUTUBE_MOVIE_TRAILER_URI, trailerKeyId, "%3F") + "&frameWidth=" + webViewLayoutParams.width + "&frameHeight=" + webViewLayoutParams.height
+                    val hardwareAccelerateFlag = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
                     window.setFlags(hardwareAccelerateFlag, hardwareAccelerateFlag)
 
                     //activated the web view for watching the movie trailer
-                    webViewTrailer = findViewById(R.id.movieTrailer)
                     webViewTrailer.settings.javaScriptEnabled = true
+                    webViewTrailer.setInitialScale(0)
                     webViewTrailer.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
                     webViewTrailer.settings.userAgentString = NetworkService().userAgent
                     webViewTrailer.settings.useWideViewPort = true
                     webViewTrailer.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
                     webViewTrailer.webChromeClient = WebChromeClient()
                     webViewTrailer.webViewClient = object : WebViewClient(){
-
                         override fun onPageFinished(view: WebView?, url: String?) {
                             webViewTrailer.removeView(webViewTrailer.findViewById(R.id.layoutWebViewLoading))
                         }
@@ -200,12 +206,21 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                         ) {
                             handler!!.proceed()
                         }
-
                     }
+                    webViewTrailer.settings.mediaPlaybackRequiresUserGesture = false
                     webViewTrailer.loadUrl(trailerUri)
                 })
-            }
+            } else {
+                this@SingleMovieDetailActivity.runOnUiThread(Runnable {
+                    val errorState : FrameLayout = findViewById(R.id.notFoundTrailerState)
+                    val layoutParamsEstate : ViewGroup.LayoutParams = errorState.layoutParams
 
+                    layoutParamsEstate.height = display.height/3
+                    errorState.layoutParams = layoutParamsEstate
+                    webViewTrailer.visibility = View.GONE
+                    errorState.visibility = View.VISIBLE
+                })
+            }
         }
 
         //load movie reviews and do endless scroll
@@ -224,12 +239,15 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                 loadMovieReviews(singleMovie)
             }
         }
-        loadMovieReviews(singleMovie)
 
+        ActionBar(this, null, true){
+            super.onBackPressed()
+            this.clearCurrentTask()
+        }
+        loadMovieReviews(singleMovie)
     }
 
     fun rowTable(titleText : String, valueText : String?) : TableRow {
-
         val text1 = TextView(applicationContext)
         val text2 = TextView(applicationContext)
         val row  = TableRow(applicationContext)
@@ -251,7 +269,6 @@ class SingleMovieDetailActivity : AppCompatActivity() {
     }
 
     fun movieReviewLayoutTemplate(reviews : SingleMovieReviewDetailResponsesDTO) : View{
-
         val inflater : View = LayoutInflater.from(applicationContext).inflate(R.layout.movie_reveiw_template, null)
         val reviewCreated : TextView = inflater.findViewById(R.id.dateReviewCreated)
         val authorReviewName : TextView = inflater.findViewById(R.id.authorReview)
@@ -267,9 +284,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
     }
 
     private fun loadMovieReviews(singleMovie : SingleMovieResponseDTO){
-
         apiService.fetchMovieReviews(singleMovie.id, movieReviewsStartPage){ reviews ->
-
             val reviewsTotal = reviews.results.size
 
             this@SingleMovieDetailActivity.runOnUiThread(object : Runnable{
@@ -289,10 +304,8 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                         val singleReviews = reviews.results.get(i)
 
                         apiService.fetchAvatarImage(singleReviews.author_details.avatar_path){ avatarResult ->
-
                             this@SingleMovieDetailActivity.runOnUiThread(object : Runnable{
                                 override fun run() {
-
                                     movieReviewFinishRender++
 
                                     singleReviews.author_details.avatar_image = avatarResult
@@ -302,35 +315,38 @@ class SingleMovieDetailActivity : AppCompatActivity() {
                                         movieReviewFinishRender = 0;
                                         nextReviewsPages = true
                                     }
-
                                 }
-
                             })
-
                         }
-
                     }
-
                 }
-
             })
-
         }
     }
 
     override fun onBackPressed() {
-
-        if(::webViewTrailer.isInitialized){
-            webViewTrailer.clearHistory()
-            webViewTrailer.destroyDrawingCache()
-            webViewTrailer.clearCache(true)
-            webViewTrailer.destroy()
-        }
-
-        CoroutineScope(Dispatchers.IO).cancel()
-        Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
-        finish()
-        onDestroy()
+        super.onBackPressed()
+        this.clearCurrentTask()
     }
 
+    private fun clearCurrentTask(){
+        if(::webViewTrailer.isInitialized){
+            try{
+                val viewGroup : ViewGroup = webViewTrailer.parent as ViewGroup
+                viewGroup.removeView(webViewTrailer)
+            } catch (e : Exception){
+                e.printStackTrace()
+            } finally {
+                webViewTrailer.clearHistory();
+                webViewTrailer.clearCache(true);
+                webViewTrailer.destroyDrawingCache();
+                webViewTrailer.removeAllViews();
+                webViewTrailer.destroy();
+            }
+        }
+
+        finishAndRemoveTask()
+        CoroutineScope(Dispatchers.IO).cancel()
+        Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
+    }
 }
