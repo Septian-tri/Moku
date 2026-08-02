@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content"/>
 
         <ProgressBar
+            style="@style/customProgressBar"
             android:id="@+id/singleMovieCardProgressBar"
             android:layout_gravity="center"
             android:layout_width="20dp"

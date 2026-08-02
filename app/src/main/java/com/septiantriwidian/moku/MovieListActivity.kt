@@ -1,8 +1,8 @@
 package com.septiantriwidian.moku
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Point
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.*
@@ -25,9 +25,8 @@ import com.septiantriwidian.moku.view.ActionBar
 import kotlinx.coroutines.Runnable
 import java.net.URLEncoder
 import java.util.*
-import kotlin.math.floor
 
-class MovieListActivity : AppCompatActivity() {
+class MovieListActivity : Activity() {
     private lateinit var movieCardUtilsDTO : MovieCardUtilsDTO
     private var isLoadingFetchMovies : Boolean = false
     private lateinit var scrollLayoutParent: ViewGroup
@@ -96,7 +95,7 @@ class MovieListActivity : AppCompatActivity() {
             }
         })
 
-        ActionBar(this, viewTitle, true) {
+        ActionBar(this, viewTitle, true, true) {
             finishAndRemoveTask()
         }
         fetchMovie()

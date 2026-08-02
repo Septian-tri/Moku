@@ -60,8 +60,11 @@ class SliderAdapterTrendingMovies (moviesList : ArrayList<SingleMovieResponseDTO
 
                 viewHolder.movieImgeCover.setOnClickListener{
                     movie.imageCover = null //reassign null image cover before sending to another activity
+
                     intent.putExtra("singleMovie", movie)
                     intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
                     context.startActivity(intent)
                     movie.imageCover = resultImage //recovering image cover after sending movie object to another activity
                 }

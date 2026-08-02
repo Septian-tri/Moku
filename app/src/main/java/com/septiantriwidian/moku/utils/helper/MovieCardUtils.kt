@@ -8,7 +8,7 @@ import kotlin.math.floor
 class MovieCardUtils(activity:Activity) {
     private var screenWidth : Int
     private var screenHeight : Int
-    private val movieCardPercentage : Double = 30.0
+    private val movieCardPercentage : Double = 32.0
 
     init {
         val getDisplayResolution = activity.windowManager.defaultDisplay

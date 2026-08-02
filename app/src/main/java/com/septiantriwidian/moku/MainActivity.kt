@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.WindowManager.LayoutParams
 import android.widget.*
 import com.septiantriwidian.moku.view.ActionBar
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import androidx.core.view.setMargins
 import com.septiantriwidian.moku.dto.SingleMovieGenreResponseDTO
 import com.septiantriwidian.moku.adapter.SliderAdapterTrendingMovies
@@ -23,7 +23,7 @@ import com.septiantriwidian.moku.utils.helper.MovieCardUtils
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.coroutines.Runnable
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : Activity() {
     private lateinit var apiService : ApiService
     private lateinit var sliderView : SliderView
     lateinit var genresListButtonContainer : LinearLayout
@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         //fetch trending movies by media
         fetchTrendingMoviesByMedia(MoviesTrendingMedia.movie, R.id.trendingMoviesContainer)
         fetchTrendingMoviesByMedia(MoviesTrendingMedia.tv, R.id.trendingTvSeriesContainer)
-        ActionBar(this, null, false, null)
+        ActionBar(this, null, false, false,null)
     }
 
     private fun fetchTrendingMoviesByMedia(trendingMedia: MoviesTrendingMedia, trendingMoviesContainer : Int){
@@ -146,5 +146,4 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
 }

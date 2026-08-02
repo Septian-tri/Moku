@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Moku</string>
+    <string name="reviews_movie">Review Film</string>
+    <string name="movie_trend">FILM SEDANG TREN</string>
+    <string name="movie_synopsis">Ikhtisar Film</string>
     <string name="mini_cover_movie">Mini Cover Movie</string>
+    <string name="movie_not_found">Film Belum Tersedia</string>
+    <string name="tv_serial_trend">SERIAL TELEVISI SEDANG TREN</string>
+    <string name="trailer_unavailable">Trailer Tidak Tersedia</string>
 </resources>

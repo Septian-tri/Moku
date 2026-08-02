@@ -47,10 +47,10 @@
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="6dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+                    android:padding="8dp"
                     android:textColorHint="@color/white_transparent"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="13sp">
 
             </EditText>

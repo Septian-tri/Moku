@@ -21,40 +21,42 @@
         android:id="@+id/movieTitleImageCoverSlider"/>
 
     <FrameLayout
+        android:padding="12dp"
         android:layout_gravity="bottom|center"
         android:background="#8F030319"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="wrap_content">
 
             <TextView
                 style="@style/singleMovieCoverTextDetail"
-                android:layout_gravity="end"
-                android:textColor="#FFFFFF"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/movieRatingTextImageSlider"/>
-
-            <TextView
-                style="@style/singleMovieCoverTextDetail"
-                android:layout_gravity="start"
-                android:textColor="#FFFFFF"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
                 android:id="@+id/addtionalMovieTxtImageCoverSlider"/>
 
-            <androidx.appcompat.widget.AppCompatRatingBar
-                android:id="@+id/ratingBar"
-                style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="35dp"
-                android:foregroundGravity="center"/>
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center"
+                    android:orientation="horizontal">
 
+                <RatingBar
+                    android:layout_gravity="center|center"
+                    style="@style/customRatingBar"
+                    android:id="@+id/ratingBar"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foregroundGravity="center"/>
+
+                <TextView
+                    android:layout_gravity="center|center"
+                    style="@style/singleMovieCoverTextDetail"
+                    android:id="@+id/movieRatingTextImageSlider"/>
+
+            </LinearLayout>
     </FrameLayout>
 
     <ProgressBar
+        style="@style/customProgressBar"
         android:id="@+id/bufferImageCoverSlider"
         android:layout_gravity="center"
         android:layout_width="30dp"

@@ -43,7 +43,7 @@
                         <TextView
                                 android:padding="8dp"
                                 android:textSize="16sp"
-                                android:text="Film Belum Tersedia"
+                                android:text="@string/movie_not_found"
                                 android:color="@color/white"
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"/>

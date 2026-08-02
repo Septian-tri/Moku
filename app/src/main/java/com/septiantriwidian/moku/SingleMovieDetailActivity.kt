@@ -1,19 +1,16 @@
 package com.septiantriwidian.moku
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
-import android.graphics.Point
 import android.net.http.SslError
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
 import android.text.Html
-import android.util.Log
 import android.view.*
 import android.webkit.*
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import com.septiantriwidian.moku.dto.SingleMovieGenreResponseDTO
 import com.septiantriwidian.moku.dto.SingleMovieResponseDTO
 import com.septiantriwidian.moku.dto.SingleMovieReviewDetailResponsesDTO
@@ -31,7 +28,7 @@ import java.util.*
 import kotlin.math.floor
 
 
-class SingleMovieDetailActivity : AppCompatActivity() {
+class SingleMovieDetailActivity : Activity(){
 
     lateinit var webViewTrailer: WebView
     lateinit var apiService : ApiService
@@ -240,7 +237,7 @@ class SingleMovieDetailActivity : AppCompatActivity() {
             }
         }
 
-        ActionBar(this, null, true){
+        ActionBar(this, null, true, true){
             super.onBackPressed()
             this.clearCurrentTask()
         }
@@ -332,8 +329,10 @@ class SingleMovieDetailActivity : AppCompatActivity() {
     private fun clearCurrentTask(){
         if(::webViewTrailer.isInitialized){
             try{
-                val viewGroup : ViewGroup = webViewTrailer.parent as ViewGroup
-                viewGroup.removeView(webViewTrailer)
+                if(!Objects.isNull(webViewTrailer.parent)){
+                    val viewGroup : ViewGroup = webViewTrailer.parent as ViewGroup
+                    viewGroup.removeView(webViewTrailer)
+                }
             } catch (e : Exception){
                 e.printStackTrace()
             } finally {

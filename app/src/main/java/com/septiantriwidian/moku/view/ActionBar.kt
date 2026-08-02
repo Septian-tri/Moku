@@ -15,18 +15,19 @@ import com.septiantriwidian.moku.utils.constant.IntentKey
 import java.util.*
 
 
-class ActionBar (activity: Activity, title:String?, showBackButton:Boolean, callback: ActionBarCallback?) {
+class ActionBar (activity: Activity, title:String?, showBackButton:Boolean, clearCurrentTask: Boolean, callback: ActionBarCallback?) {
+    private var callback: ActionBarCallback?
+    private var clearCurrentTask :Boolean
+    private var showBackButton:Boolean
     private var activity : Activity
     private var title: String?
-    private var showBackButton:Boolean
-    private var callback: ActionBarCallback?
 
     init {
-        this.activity = activity
-        this.title = title
+        this.clearCurrentTask = clearCurrentTask
         this.showBackButton = showBackButton
         this.callback = callback
-
+        this.activity = activity
+        this.title = title
         doAction()
     }
 
@@ -77,10 +78,11 @@ class ActionBar (activity: Activity, title:String?, showBackButton:Boolean, call
     private fun doSearchMovie(query : String) {
         if(!"".equals(query)){
             val movieListByGenres = Intent(activity, MovieListActivity::class.java)
-
             movieListByGenres.putExtra(IntentKey.SEARCH_QUERY.name, query)
 
-            activity.finishAndRemoveTask()
+            if(clearCurrentTask){
+                activity.finishAndRemoveTask()
+            }
             activity.startActivity(movieListByGenres)
         }
     }
